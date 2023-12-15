@@ -6,6 +6,7 @@
     position: sticky;
     top: 0;
     background-color: var(--black);
+    z-index: 100;
 }
 
 .logo {
@@ -18,12 +19,13 @@
     gap: 1.5rem;
 }
 
-.links p, .menu-icon, .mobile-links p {
+.links a, .menu-icon, .mobile-links a {
+    text-decoration: none;
     color: var(--grey);
     font-weight: 600;
 }
 
-.links p:hover, .menu-icon:hover, .mobile-links p:hover {
+.links a:hover, .menu-icon:hover, .mobile-links p:hover {
     color: var(--white);
     transition: all 0.6s;
     cursor: pointer;

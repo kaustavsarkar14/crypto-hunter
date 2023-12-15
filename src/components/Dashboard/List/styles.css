@@ -1,0 +1,72 @@
+.list-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+.list-row:hover {
+    background-color: var(--darkgrey);
+    transition: 0.3s all;
+    cursor: pointer;
+}
+.info-container h1 {
+    margin: 0 !important;
+}
+.list-row td {
+    text-align: left;
+    width: 18%;
+}
+.info-flex {
+    width: 4rem !important;
+}
+.td-center-align {
+    text-align: center;
+}
+.td-right-align{
+    text-align: right !important;
+    color: var(--grey);
+    font-weight: 500;
+}
+.market_cap-mobile {
+    display: none;
+}
+
+.chip-flex-list {
+    display: flex;
+    gap: 1rem;
+}
+@media screen and (max-width : 1053px ){
+    .list-row {
+        padding: 0;
+    }
+    .mobile-hide {
+        display: none;
+    }
+    .market_cap-desktop {
+        display: none;
+    }
+    .market_cap-mobile {
+        display: block;
+    }
+    .list-row td {
+        /* width: fit-content; */
+    }
+    .info-flex {
+        max-width: 2rem;
+    }
+    .info-flex img {
+        width: 2rem;
+        height: 2rem;
+    }
+    .chip-flex-list {
+        font-size: 0.7rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .list-price-mobile h1 {
+        font-size: 0.9rem;
+    }
+}

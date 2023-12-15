@@ -8,6 +8,7 @@
     min-width: 140px;
     text-align: center;
     text-transform: capitalize;
+    color: var(--white);
 }
 .btn:hover {
     box-shadow: 0px 0px 30px #3a80e9b9;
