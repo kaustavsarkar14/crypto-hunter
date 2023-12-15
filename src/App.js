@@ -1,12 +1,17 @@
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
-import Header from './components/common/Header';
-import MainComponent from './components/landingPage/MainComponent';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
     <div>
-      <Header/>
-      <MainComponent/>
+    <Routes>
+      <Route path='/' element={<HomePage/>} />
+      <Route path='/dashboard' element={<></>} />
+      <Route path='/coin/:id' element={<></>} />
+      <Route path='/compare' element={<></>} />
+      <Route path='/watchlist' element={<></>} />
+    </Routes>
     </div>
   );
 }
