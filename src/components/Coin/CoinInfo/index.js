@@ -7,7 +7,7 @@ const CoinInfo = ({ heading, description }) => {
             <h2 className='coin-info-heading' >{heading}</h2>
             <p className='coin-info-desc'
             onClick={()=>setExpanded(isExpanded=>!isExpanded)}
-            dangerouslySetInnerHTML={{__html: isExpanded?description:description.slice(0,300)+(description.length>200 && "...<p>Read  more</p>")}}
+            dangerouslySetInnerHTML={{__html: description==""?"No description available.":isExpanded?description:description.slice(0,300)+(description.length>200 && "...<p>Read  more</p>")}}
             />
         </div>
     )

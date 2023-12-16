@@ -4,6 +4,7 @@ import Button from '../../common/Button'
 import iphone from "../../../assets/phone.png"
 import gradient from "../../../assets/gradient.png"
 import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const MainComponent = () => {
   return (
@@ -29,7 +30,7 @@ const MainComponent = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.5 }}
         >
-          <Button buttonText={"Dashboard"} />
+          <Link to={"/dashboard"} ><Button buttonText={"Dashboard"} /></Link>
           <Button buttonText={"Share"} outlined={true} />
         </motion.div>
       </div>

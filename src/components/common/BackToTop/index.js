@@ -3,13 +3,14 @@ import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
 import "./styles.css"
 const BackToTop = () => {
     const scrollTopButton = useRef()
-    console.log(scrollTopButton)
     function scrollToTop() {
         document.documentElement.scrollTop = 0
     }
     function handleScroll() {
         if (document.documentElement.scrollTop > 300)
             scrollTopButton.current.style.display = "flex"
+        if (document.documentElement.scrollTop < 200)
+            scrollTopButton.current.style.display = "none"
     }
     useEffect(() => {
         document.addEventListener('scroll', handleScroll)
