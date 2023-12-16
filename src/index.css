@@ -64,3 +64,10 @@ body {
   margin: 1.5rem auto;
   border-radius: 0.8rem;
 }
+
+@media screen and (max-width:768px){
+  .grey-wrapper {
+    width: 97%;
+    padding-inline: 10px;
+  }
+}
