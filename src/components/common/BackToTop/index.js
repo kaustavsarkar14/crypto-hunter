@@ -1,0 +1,30 @@
+import React, { useEffect, useRef } from 'react'
+import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded';
+import "./styles.css"
+const BackToTop = () => {
+    const scrollTopButton = useRef()
+    console.log(scrollTopButton)
+    function scrollToTop() {
+        document.documentElement.scrollTop = 0
+    }
+    function handleScroll() {
+        if (document.documentElement.scrollTop > 300)
+            scrollTopButton.current.style.display = "flex"
+    }
+    useEffect(() => {
+        document.addEventListener('scroll', handleScroll)
+        return ()=>{
+            document.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+    return (
+        <div className='back-to-top-button'
+         ref={scrollTopButton}
+         onClick={scrollToTop}
+          >
+            <ArrowUpwardRoundedIcon className='arrow' style={{ color: "var(--blue)" }} />
+        </div>
+    )
+}
+
+export default BackToTop

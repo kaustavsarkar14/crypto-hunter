@@ -2,7 +2,7 @@ import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 import Grid from '../Grid';
 import List from '../List';
@@ -12,11 +12,14 @@ import coinsContext from '../../../context/coinsContext';
 import LoadingGrid from '../LoadingGrid';
 
 export default function Tabs() {
+    const { filteredCoins, setSearch, isLoading,setLoading, paginatedCoins, isSearching } = useContext(coinsContext)
     const [value, setValue] = useState('grid');
+    const [coins, setCoins] = useState([])
+    
+    useEffect(() => {
+        setCoins(isSearching?filteredCoins:paginatedCoins)
+    },[isSearching, paginatedCoins, filteredCoins])
 
-    const { filteredCoins, setSearch, isLoading,paginatedCoins } = useContext(coinsContext)
-
-    const coins = [...paginatedCoins]
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
@@ -30,7 +33,6 @@ export default function Tabs() {
             }
         }
     })
-
     return (
         <ThemeProvider theme={theme}>
             <TabContext value={value}>
@@ -42,10 +44,10 @@ export default function Tabs() {
                     <div className="grid-flex">
                         {
                             isLoading ?
-                                Array(20).fill(0).map(el => <LoadingGrid />)
+                                Array(20).fill(0).map((el,i) => <LoadingGrid key={i} />)
                                 :
                                 (
-                                    coins.length == 0 ?
+                                    coins.length == 0 && isSearching ?
                                         <div style={{ maxWidth: "200px", display: "flex", flexDirection: "column", gap: "2rem", margin: "auto" }}>
                                             <h2>No results found!</h2>
                                             <Button buttonText={"Clear Search"} onClick={() => setSearch('')} />

@@ -39,7 +39,7 @@
 .coin-name {
     margin: 0;
     font-weight: 400;
-    color: var(--grey);
+    color: var(--grey) !important;
     font-size: 0.8rem;
 }
 

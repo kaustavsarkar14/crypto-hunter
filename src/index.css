@@ -9,11 +9,15 @@
   --green : #61c96f;
   --red : #f94141;
 }
-
+a {
+  text-decoration: none;
+  
+}
 * {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
 }
 body {
   margin: 0;
@@ -51,4 +55,12 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--white);
+}
+
+.grey-wrapper {
+  display: block;
+  width: 90%;
+  background-color: var(--darkgrey);
+  margin: 1.5rem auto;
+  border-radius: 0.8rem;
 }
