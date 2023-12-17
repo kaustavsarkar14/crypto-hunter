@@ -7,7 +7,7 @@ import Loader from '../components/common/Loader'
 import getCoinDetails from '../functions/getCoinDetails'
 import getCoinPrices from '../functions/getCoinPrices'
 import LineChart from '../components/Coin/LineChart'
-import SelectData from '../components/Coin/Select'
+import SelectDate from '../components/Coin/Select'
 import settingChartData from '../functions/settingChartData'
 import PriceType from '../components/Coin/PriceType'
 
@@ -41,12 +41,7 @@ const CoinDetailsPage = () => {
                             <List coin={coin} />
                         </div>
                         <div className="grey-wrapper">
-                            <SelectData
-                                data={days}
-                                setData={setDays}
-                                options={[{ value: 7, text: "7 days" }, { value: 30, text: "30 days" }, { value: 365, text: "1yr" }, { value: "max", text: "All time" }]}
-                                label={"Days"}
-                            />
+                            <SelectDate days={days} setDays={setDays}/>
                             <PriceType priceType={priceType} setPriceType={setPriceType} />
                             <LineChart chartData={chartData} />
                         </div>

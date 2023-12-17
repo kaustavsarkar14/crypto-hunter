@@ -1,0 +1,6 @@
+.coins-select-flex {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+}

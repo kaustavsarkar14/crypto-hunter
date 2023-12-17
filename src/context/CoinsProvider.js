@@ -35,7 +35,7 @@ const CoinsProvider = ({ children }) => {
     }, [])
 
 
-    return <coinsContext.Provider value={{ filteredCoins, search, setSearch, onSearchChange, isLoading, setLoading , page, handlePageChange,paginatedCoins, isSearching}}>
+    return <coinsContext.Provider value={{ coins,filteredCoins, search, setSearch, onSearchChange, isLoading, setLoading , page, handlePageChange,paginatedCoins, isSearching}}>
         {children}
     </coinsContext.Provider>
 }

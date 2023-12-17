@@ -4,20 +4,17 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function SelectData({ data, setData, options, label }) {
+export default function SelectDate({ days, setDays }) {
 
     const handleChange = (event) => {
-        setData(event.target.value);
+        setDays(event.target.value);
     };
 
     return (
-        <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
-            <InputLabel id="demo-select-small-label">Age</InputLabel>
             <Select
                 labelId="demo-select-small-label"
                 id="demo-select-small"
-                value={data}
-                label={label}
+                value={days}
                 onChange={handleChange}
                 sx={{
                     height: "2.5rem",
@@ -35,14 +32,13 @@ export default function SelectData({ data, setData, options, label }) {
                     },
                 }}
             >
-                {/* <MenuItem value="">
-                    <em>None</em>
-                </MenuItem> */}
-
-                {
-                    options.map(option => <MenuItem value={option.value}>{option.text}</MenuItem>)
-                }
+                <MenuItem value={7}>7 days</MenuItem>
+                <MenuItem value={30}>30 days</MenuItem>
+                <MenuItem value={60}>60 days</MenuItem>
+                <MenuItem value={90}>90 days</MenuItem>
+                <MenuItem value={180}>6 Months</MenuItem>
+                <MenuItem value={365}>1 Year</MenuItem>
+                <MenuItem value={"max"}>Max</MenuItem>
             </Select>
-        </FormControl>
     );
 }

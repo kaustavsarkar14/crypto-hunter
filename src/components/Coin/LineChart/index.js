@@ -27,7 +27,7 @@ function LineChart({ chartData, multiAxis }) {
   };
 
   return <div style={{ padding: "1rem" }} >
-    <Line data={chartData} options={options} />;
+    <Line data={chartData} options={options} />
   </div>
 }
 
