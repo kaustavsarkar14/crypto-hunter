@@ -6,9 +6,17 @@
     height: 3rem;
     border-radius: 50%;
     border: 2px solid var(--blue);
-    margin: 1.5rem;
+    margin: 2rem;
     bottom: 2rem;
     right: 2rem;
     display: none;
     cursor: pointer;
+    background-color: var(--blue);
+    z-index: 100;
+}
+
+@media screen and (max-width: 768px){
+    .back-to-top-button {
+        margin: 5rem 1rem;
+    }
 }

@@ -1,0 +1,20 @@
+.toggle-prices{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+  
+  .toggle-prices .Mui-selected {
+    background-color: rgba(66, 62, 128, 0.242) !important;
+    color: white !important; 
+  }
+
+
+  @media screen and (max-width: 768px){
+    .toggle-prices {
+      font-size: 0.7rem;
+      margin-block: 2rem;
+    }
+  }

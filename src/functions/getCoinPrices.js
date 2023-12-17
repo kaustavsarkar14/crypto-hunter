@@ -1,6 +1,6 @@
-export default function getCoinPrices(id, days) {
+export default function getCoinPrices(id, days, priceType) {
     return fetch(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&interval=daily`)
         .then(data => data.json())
-        .then(data => data.prices)
+        .then(data => data[priceType])
         .catch(err => console.log(err))
 }

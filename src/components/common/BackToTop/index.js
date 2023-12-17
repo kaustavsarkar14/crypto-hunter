@@ -23,7 +23,7 @@ const BackToTop = () => {
          ref={scrollTopButton}
          onClick={scrollToTop}
           >
-            <ArrowUpwardRoundedIcon className='arrow' style={{ color: "var(--blue)" }} />
+            <ArrowUpwardRoundedIcon className='arrow' style={{ color: "var(--white)" }} />
         </div>
     )
 }
