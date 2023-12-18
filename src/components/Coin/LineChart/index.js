@@ -4,6 +4,7 @@ import { Chart as ChartJS } from "chart.js/auto";
 import { convertNumbers } from "../../../functions/convertNumbers";
 
 function LineChart({ chartData, multiAxis }) {
+  console.log("linechart data", chartData)
   const options = {
     plugins: {
       legend: {
@@ -16,7 +17,20 @@ function LineChart({ chartData, multiAxis }) {
       intersect: false,
     },
     scales: {
-      y: {
+      crypto1: {
+        type: "linear",
+        display: "true",
+        position: "left",
+        ticks: {
+          callback: function (value, index, ticks) {
+            return "$" + value
+          }
+        }
+      },
+      crypto2: {
+        type: "linear",
+        display: "true",
+        position: "right",
         ticks: {
           callback: function (value, index, ticks) {
             return "$" + value

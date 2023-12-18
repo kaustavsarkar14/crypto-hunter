@@ -4,7 +4,7 @@ import coinsContext from '../../../context/coinsContext'
 import Loader from '../../common/Loader'
 import { MenuItem, Select } from '@mui/material'
 
-const SelectCoins = ({crypt1, crypt2, setCrypto1, setCrypto2}) => {
+const SelectCoins = ({crypto1, crypto2, handleCoinChange}) => {
     const { coins, isLoading } = useContext(coinsContext)
 
     const style = {
@@ -22,11 +22,6 @@ const SelectCoins = ({crypt1, crypt2, setCrypto1, setCrypto2}) => {
             },
         },
     }
-
-    const handleChange=(e)=>{
-        console.log(e.target.value)
-    }
-
     if (isLoading) return <Loader />
     return (
         <div className='coins-select-flex' >
@@ -34,9 +29,9 @@ const SelectCoins = ({crypt1, crypt2, setCrypto1, setCrypto2}) => {
                 <Select
                     labelId="demo-select-small-label"
                     id="demo-select-small"
-                    value={crypt1}
+                    value={crypto1}
                     label={"Crypto 1"}
-                    onChange={(e)=>setCrypto1(e.target.value)}
+                    onChange={(e)=>handleCoinChange(e, false)}
                     sx={style}
                 >
                     {
@@ -47,13 +42,13 @@ const SelectCoins = ({crypt1, crypt2, setCrypto1, setCrypto2}) => {
                 <Select
                     labelId="demo-select-small-label"
                     id="demo-select-small"
-                    value={crypt2}
+                    value={crypto2}
                     label={"Crypto 2"}
-                    onChange={(e)=>setCrypto2(e.target.value)}
+                    onChange={(e)=>handleCoinChange(e, true)}
                     sx={style}
                 >
                     {
-                        coins.map(coin => <MenuItem key={coin.id} value={coin.id}>{coin.name}</MenuItem>)
+                        coins.filter(coin=>coin.id!=crypto1).map(coin => <MenuItem key={coin.id} value={coin.id}>{coin.name}</MenuItem>)
                     }
                 </Select>
             
