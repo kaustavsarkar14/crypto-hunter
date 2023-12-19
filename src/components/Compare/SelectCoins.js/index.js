@@ -22,7 +22,7 @@ const SelectCoins = ({crypto1, crypto2, handleCoinChange}) => {
             },
         },
     }
-    if (isLoading) return <Loader />
+    if (isLoading) return <></>
     return (
         <div className='coins-select-flex' >
             <p>Crypto 1</p>

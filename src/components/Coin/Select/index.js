@@ -4,18 +4,14 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function SelectDate({ days, setDays }) {
-
-    const handleChange = (event) => {
-        setDays(event.target.value);
-    };
+export default function SelectDate({ days, handleDaysChange }) {
 
     return (
             <Select
                 labelId="demo-select-small-label"
                 id="demo-select-small"
                 value={days}
-                onChange={handleChange}
+                onChange={e=>handleDaysChange(e)}
                 sx={{
                     height: "2.5rem",
                     color: "var(--white)",

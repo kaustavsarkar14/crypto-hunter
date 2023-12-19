@@ -29,6 +29,12 @@ const CoinDetailsPage = () => {
         settingChartData(setChartData, prices, days)
         setLoading(false)
     }
+    function handleDaysChange(e){
+        setDays(e.target.value)
+    }
+    function handlePriceTypeChange(e){
+        setPriceType(e.target.value)
+    }
     return (
         <div>
             <Header />
@@ -36,17 +42,17 @@ const CoinDetailsPage = () => {
                 isLoading ?
                     <Loader />
                     :
-                    <>
+                    <div className='container'>
                         <div className="grey-wrapper">
                             <List coin={coin} />
                         </div>
                         <div className="grey-wrapper">
-                            <SelectDate days={days} setDays={setDays}/>
-                            <PriceType priceType={priceType} setPriceType={setPriceType} />
+                            <SelectDate days={days} handleDaysChange={handleDaysChange}/>
+                            <PriceType priceType={priceType} handlePriceTypeChange={handlePriceTypeChange} />
                             <LineChart chartData={chartData} />
                         </div>
                         <CoinInfo heading={coin.name} description={coin.desc} />
-                    </>
+                    </div>
             }
         </div>
     )

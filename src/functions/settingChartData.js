@@ -7,24 +7,18 @@ export default function settingChartData(setChartData, prices1, days, prices2) {
             datasets: [{
                 label: "Crypto 1",
                 data: prices1.map(item => item[1]),
-                fill: false,
-                borderColor: '#3a80e9',
-                backgroundColor: 'rgba(58, 128, 233, 1)',
+                borderColor: "#3a80e9",
                 tension: 0.25,
-                borderWidth: 2,
                 pointRadius: 0,
-                yAxisID : "Crypto 1"
+                yAxisID: 'y',
             },
             {
                 label: "Crypto 2",
                 data: prices2.map(item => item[1]),
-                fill: false,
-                borderColor: '#61c96f',
-                backgroundColor: 'rgba(58, 128, 233, 1)',
+                borderColor: "#61c96f",
                 tension: 0.25,
-                borderWidth: 2,
                 pointRadius: 0,
-                yAxisID : "Crypto 2"
+                yAxisID: 'y1',
             }]
         })
     }
@@ -34,13 +28,10 @@ export default function settingChartData(setChartData, prices1, days, prices2) {
             datasets: [{
                 label: "price",
                 data: prices1.map(item => item[1]),
-                fill: false,
-                borderColor: '#3a80e9',
-                backgroundColor: 'rgba(58, 128, 233, 1)',
+                borderColor: "#3a80e9",
                 tension: 0.25,
-                borderWidth: 2,
                 pointRadius: 0,
-                yAxisID : "Crypto 1"
+                yAxisID: 'y',
             }]
         })
     }

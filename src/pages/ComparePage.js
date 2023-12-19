@@ -9,6 +9,7 @@ import List from '../components/Dashboard/List/index.js'
 import CoinInfo from '../components/Coin/CoinInfo/index.js'
 import settingChartData from '../functions/settingChartData.js'
 import LineChart from '../components/Coin/LineChart/index.js'
+import PriceType from '../components/Coin/PriceType/index.js'
 
 const ComparePage = () => {
   const [crypto1, setCrypto1] = useState("bitcoin")
@@ -61,18 +62,35 @@ const ComparePage = () => {
     setLoading(false)
   }
 
+  async function handleDaysChange(e) {
+    setLoading(true)
+    const prices1 = await getCoinPrices(crypto1, e.target.value, priceType)
+    const prices2 = await getCoinPrices(crypto2, e.target.value, priceType)
+    if(prices1 && prices2) settingChartData(setChartData, prices1, days, prices2)
+    setDays(e.target.value)
+    setLoading(false)
+  }
+  async function handlePriceTypeChange(e) {
+    setLoading(true)
+    const prices1 = await getCoinPrices(crypto1, days, e.target.value)
+    const prices2 = await getCoinPrices(crypto2, days, e.target.value)
+    settingChartData(setChartData, prices1, days, prices2)
+    setPriceType(e.target.value)
+    setLoading(false)
+  }
+
+  console.log(chartData)
   return (
     <div>
       <Header />
       <div className='coin-controls container'>
         <SelectCoins crypto1={crypto1} crypto2={crypto2} handleCoinChange={handleCoinChange} />
-        <SelectDate days={days} setDays={setDays} />
       </div>
       {
         isLoading ?
           <Loader />
           :
-          <>
+          <div className='container'>
             <div className="grey-wrapper" style={{ marginBottom: "1rem" }} >
               <List coin={crypto1Data} />
             </div>
@@ -80,15 +98,18 @@ const ComparePage = () => {
               <List coin={crypto2Data} />
             </div>
             <div className="grey-wrapper">
-              <LineChart chartData={chartData} multiAxis={true} />
+                <SelectDate days={days} handleDaysChange={handleDaysChange} />
+                <PriceType priceType={priceType} handlePriceTypeChange={handlePriceTypeChange} />
+                <LineChart chartData={chartData} multiAxis={true} priceType={priceType} />
             </div>
             <div className="grey-wrapper">
               <CoinInfo heading={crypto1Data.name} description={crypto1Data.desc} />
             </div>
             <div className="grey-wrapper">
+
               <CoinInfo heading={crypto2Data.name} description={crypto2Data.desc} />
             </div>
-          </>
+          </div>
       }
     </div>
   )

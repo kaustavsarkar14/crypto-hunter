@@ -1,14 +1,14 @@
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import "./styles.css"
-export default function PriceType({priceType, setPriceType}) {
+export default function PriceType({priceType, handlePriceTypeChange}) {
 
     return (
         <div className="toggle-prices">
             <ToggleButtonGroup
                 value={priceType}
                 exclusive
-                onChange={e=>setPriceType(e.target.value)}
+                onChange={e=>handlePriceTypeChange(e)}
                 sx={{
                     "&.Mui-selected": {
                         color: "var(--blue) !important",

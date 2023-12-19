@@ -1,48 +1,54 @@
-import React from "react";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto";
-import { convertNumbers } from "../../../functions/convertNumbers";
+import React from 'react';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
 
-function LineChart({ chartData, multiAxis }) {
-  console.log("linechart data", chartData)
-  const options = {
-    plugins: {
-      legend: {
-        display: multiAxis ? true : false,
-      },
-    },
-    responsive: true,
-    interaction: {
-      mode: "index",
-      intersect: false,
-    },
-    scales: {
-      crypto1: {
-        type: "linear",
-        display: "true",
-        position: "left",
-        ticks: {
-          callback: function (value, index, ticks) {
-            return "$" + value
-          }
-        }
-      },
-      crypto2: {
-        type: "linear",
-        display: "true",
-        position: "right",
-        ticks: {
-          callback: function (value, index, ticks) {
-            return "$" + value
-          }
-        }
-      }
-    }
-  };
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+);
 
-  return <div style={{ padding: "1rem" }} >
-    <Line data={chartData} options={options} />
-  </div>
+
+
+export default function LineChart({ chartData, multiAxis }) {
+  console.log(chartData)
+    const options = {
+        responsive: true,
+        interaction: {
+            mode: 'index',
+            intersect: false,
+        },
+        stacked: false,
+       
+        scales: {
+            y: {
+                type: 'linear',
+                display: true,
+                position: 'left',
+            },
+            y1: multiAxis && {
+                type: 'linear',
+                display: true,
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false,
+                },
+            },
+        },
+    };
+
+    return <Line options={options} data={chartData} />;
 }
-
-export default LineChart;
