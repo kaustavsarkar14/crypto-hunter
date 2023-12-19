@@ -1,12 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./styles.css"
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
 import { Tooltip } from '@mui/material';
 import { convertNumbers } from '../../../functions/convertNumbers';
 import { Link } from 'react-router-dom';
+import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
 
 const List = ({ coin }) => {
+    const [isStarred, setIsStarred] = useState( (JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
+
+    function handleStarIconClick(event) {
+        event.preventDefault();
+
+        const starredCoins = JSON.parse(localStorage.getItem('starred')) || []
+        console.log("localstorage>>", starredCoins)
+        if (starredCoins.includes(coin.id)) {
+            const filtededCoins = starredCoins.filter(el => el != coin.id)
+            localStorage.setItem('starred', JSON.stringify(filtededCoins))
+            setIsStarred(false)
+        }
+        else {
+            localStorage.setItem('starred', JSON.stringify([...starredCoins, coin.id]));
+            setIsStarred(true)
+        }
+    }
     return (
         <Link to={`/coin/${coin.id}`} >
             <tr className='list-row' >
@@ -21,6 +40,9 @@ const List = ({ coin }) => {
                 </td>
                 <Tooltip title="Price change (24h)" >
                     <td className="chip-flex-list">
+                        <div className="star-icon" onClick={handleStarIconClick}>
+                            {isStarred ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+                        </div>
                         <div className={coin.price_change_percentage_24h > 0 ? "price-chip" : "price-chip-red"}>{coin.price_change_percentage_24h.toFixed(2) + "%"}</div>
                         <div className={(coin.price_change_percentage_24h > 0 ? "icon-chip" : "icon-chip-red") + " mobile-hide"} >
                             {coin.price_change_percentage_24h > 0 ? <TrendingUpRoundedIcon /> : <TrendingDownRoundedIcon />}
@@ -46,6 +68,7 @@ const List = ({ coin }) => {
                     <td className='market_cap-mobile'>
                         <p className=' td-right-align' >{"$" + convertNumbers(coin.market_cap.toLocaleString())}</p>
                     </td>
+
                 </Tooltip>
             </tr>
         </Link>

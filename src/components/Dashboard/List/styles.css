@@ -40,6 +40,9 @@
     display: flex;
     gap: 1rem;
 }
+.star-icon {
+    color: var(--blue);
+}
 @media screen and (max-width : 1053px ){
     .list-row {
         padding: 0;
@@ -68,6 +71,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin-right: 7%;
     }
     .list-price-mobile h1 {
         font-size: 0.9rem;

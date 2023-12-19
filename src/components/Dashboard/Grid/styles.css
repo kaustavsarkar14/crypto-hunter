@@ -9,6 +9,7 @@
     flex-direction: column;
     justify-content: space-between;
     gap: 0.5rem;
+    position: relative;
 }
 .grid-container-red:hover {
     border-color: var(--red) !important;
@@ -110,4 +111,10 @@
     margin-block: 0.5rem;
     font-size: 0.8rem;
     font-weight: 500;
+}
+
+.grid-top {
+    display: flex;
+    justify-content: space-between;
+    color: var(--blue);
 }
