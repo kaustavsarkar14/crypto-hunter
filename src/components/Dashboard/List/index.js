@@ -7,9 +7,10 @@ import { convertNumbers } from '../../../functions/convertNumbers';
 import { Link } from 'react-router-dom';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import { motion } from 'framer-motion';
 
 const List = ({ coin }) => {
-    const [isStarred, setIsStarred] = useState( (JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
+    const [isStarred, setIsStarred] = useState((JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
 
     function handleStarIconClick(event) {
         event.preventDefault();
@@ -27,8 +28,13 @@ const List = ({ coin }) => {
         }
     }
     return (
+
         <Link to={`/coin/${coin.id}`} >
-            <tr className='list-row' >
+            <motion.tr
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className='list-row' >
                 <Tooltip title={coin.name} >
                     <td className="info-flex">
                         <img src={coin.image} className='coin-logo' alt="" />
@@ -70,7 +76,7 @@ const List = ({ coin }) => {
                     </td>
 
                 </Tooltip>
-            </tr>
+            </motion.tr>
         </Link>
     )
 }
