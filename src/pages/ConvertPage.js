@@ -9,8 +9,8 @@ const ConvertPage = () => {
   const { coins, isLoading } = useContext(coinsContext)
   const [crypto1, setCrypto1] = useState('bitcoin')
   const [crypto2, setCrypto2] = useState('ethereum')
-  const [crypto1Data, setCrypto1Data] = useState({})
-  const [crypto2Data, setCrypto2Data] = useState({})
+  const [crypto1Data, setCrypto1Data] = useState(null)
+  const [crypto2Data, setCrypto2Data] = useState(null)
 
   useEffect(() => {
 
@@ -35,7 +35,7 @@ const ConvertPage = () => {
       <div className="container">
         <SelectCoins crypto1={crypto1} crypto2={crypto2} handleCoinChange={handleCoinChange} />
         {
-          isLoading ?
+          isLoading || !crypto1Data || !crypto2Data ?
             <Loader />
             :
             <>
