@@ -57,14 +57,17 @@ body {
   background: var(--white);
 }
 .container {
-  width: 60%;
+  width: 65%;
   margin: auto;
 }
 .grey-wrapper {
   display: block;
   background-color: var(--darkgrey);
-  margin: 1.5rem auto;
+  margin: 1rem auto;
   border-radius: 0.8rem;
+}
+.padding {
+  padding: 1rem;
 }
 .coin-controls {
   display: flex;
@@ -74,6 +77,8 @@ body {
   .grey-wrapper {
     width: 97%;
     padding-inline: 10px;
+    padding-top: 10px;
+    padding-bottom: 2px;
   }
   .container {
     width: 97%;

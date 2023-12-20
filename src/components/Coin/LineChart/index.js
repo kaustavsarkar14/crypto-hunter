@@ -10,6 +10,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { convertNumbers } from '../../../functions/convertNumbers';
 
 ChartJS.register(
     CategoryScale,
@@ -24,7 +25,7 @@ ChartJS.register(
 
 
 export default function LineChart({ chartData, multiAxis }) {
-  console.log(chartData)
+    console.log(chartData)
     const options = {
         responsive: true,
         interaction: {
@@ -32,12 +33,17 @@ export default function LineChart({ chartData, multiAxis }) {
             intersect: false,
         },
         stacked: false,
-       
+
         scales: {
             y: {
                 type: 'linear',
                 display: true,
                 position: 'left',
+                ticks: {
+                    callback: function (val, index) {
+                        return "$" + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
+                    },
+                }
             },
             y1: multiAxis && {
                 type: 'linear',
@@ -46,6 +52,11 @@ export default function LineChart({ chartData, multiAxis }) {
                 grid: {
                     drawOnChartArea: false,
                 },
+                ticks: {
+                    callback: function (val, index) {
+                        return "$" + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
+                    },
+                }
             },
         },
     };
