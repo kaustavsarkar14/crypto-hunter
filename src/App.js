@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import CoinDetailsPage from './pages/CoinDetailsPage';
 import ComparePage from './pages/ComparePage';
 import WatchList from './pages/WatchList';
+import ConvertPage from './pages/ConvertPage';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path='/coin/:id' element={<CoinDetailsPage/>} />
       <Route path='/compare' element={<ComparePage/>} />
       <Route path='/watchlist' element={<WatchList/>} />
+      <Route path='/convert' element={<ConvertPage/>} />
     </Routes>
     </div>
   );

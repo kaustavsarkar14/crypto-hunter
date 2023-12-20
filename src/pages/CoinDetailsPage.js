@@ -46,7 +46,7 @@ const CoinDetailsPage = () => {
                         <div className="grey-wrapper">
                             <List coin={coin} />
                         </div>
-                        <div className="grey-wrapper ">
+                        <div className="grey-wrapper p1">
                             <SelectDate days={days} handleDaysChange={handleDaysChange}/>
                             <PriceType priceType={priceType} handlePriceTypeChange={handlePriceTypeChange} />
                             <LineChart chartData={chartData} />

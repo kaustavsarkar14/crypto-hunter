@@ -97,7 +97,7 @@ const ComparePage = () => {
             <div className="grey-wrapper">
               <List coin={crypto2Data} />
             </div>
-            <div className="grey-wrapper">
+            <div className="grey-wrapper p1">
                 <SelectDate days={days} handleDaysChange={handleDaysChange} />
                 <PriceType priceType={priceType} handlePriceTypeChange={handlePriceTypeChange} />
                 <LineChart chartData={chartData} multiAxis={true} priceType={priceType} />

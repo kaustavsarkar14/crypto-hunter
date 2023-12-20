@@ -20,9 +20,10 @@ export default function TemporaryDrawer() {
                     >
                         <div className='mobile-links' >
                             <Link to={'/'}>Home</Link>
+                            <Link to={'/dashboard'}>Dashboard</Link>
                             <Link to={'/compare'}>Compare</Link>
-                            <Link to={"/list"} >List</Link>
-                            <Link to={'watchlist'} >Watchlist</Link>
+                            <Link to={"/convert"} >Convert</Link>
+                            <Link to={'/watchlist'} >Watchlist</Link>
                         </div>
                     </Drawer>
                 </  div>
