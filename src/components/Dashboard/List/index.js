@@ -8,23 +8,30 @@ import { Link } from 'react-router-dom';
 import StarBorderRoundedIcon from '@mui/icons-material/StarBorderRounded';
 import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const List = ({ coin }) => {
     const [isStarred, setIsStarred] = useState((JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
 
-    function handleStarIconClick(event) {
+    function handleStarIconClick(event){
         event.preventDefault();
-
         const starredCoins = JSON.parse(localStorage.getItem('starred')) || []
         console.log("localstorage>>", starredCoins)
-        if (starredCoins.includes(coin.id)) {
-            const filtededCoins = starredCoins.filter(el => el != coin.id)
+        if(starredCoins.includes(coin.id)) {
+            const filtededCoins = starredCoins.filter(el=>el!=coin.id)
             localStorage.setItem('starred', JSON.stringify(filtededCoins))
             setIsStarred(false)
+            toast.info("Coin removed from watchlist !",{
+                theme:"dark",
+            })
         }
         else {
             localStorage.setItem('starred', JSON.stringify([...starredCoins, coin.id]));
             setIsStarred(true)
+            toast.success("Coin added to watchlist !",{
+                theme:"dark",
+            })
         }
     }
     return (
@@ -48,6 +55,7 @@ const List = ({ coin }) => {
                     <td className="chip-flex-list">
                         <div className="star-icon" onClick={handleStarIconClick}>
                             {isStarred ? <StarRoundedIcon /> : <StarBorderRoundedIcon />}
+                            <ToastContainer/>
                         </div>
                         <div className={coin.price_change_percentage_24h > 0 ? "price-chip" : "price-chip-red"}>{coin.price_change_percentage_24h.toFixed(2) + "%"}</div>
                         <div className={(coin.price_change_percentage_24h > 0 ? "icon-chip" : "icon-chip-red") + " mobile-hide"} >
