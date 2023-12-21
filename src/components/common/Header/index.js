@@ -2,6 +2,7 @@ import "./styles.css"
 import TemporaryDrawer from './Drawer'
 import Button from "../Button"
 import { Link } from "react-router-dom"
+import CurrencySelect from "./CurrencySelect"
 const Header = () => {
   return (
     <div className='navbar' >
@@ -12,6 +13,7 @@ const Header = () => {
         <Link to={"/convert"} >Convert</Link>
         <Link to={'/watchlist'} >Watchlist</Link>
         <Link to={"/dashboard"} ><Button buttonText={"Dashboard"}  /></Link>
+        <CurrencySelect/>
       </div>
       <div className='drawer' >
         <TemporaryDrawer />

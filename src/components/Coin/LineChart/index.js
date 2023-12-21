@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -11,6 +11,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { convertNumbers } from '../../../functions/convertNumbers';
+import coinsContext from '../../../context/coinsContext';
 
 ChartJS.register(
     CategoryScale,
@@ -25,6 +26,7 @@ ChartJS.register(
 
 
 export default function LineChart({ chartData, multiAxis }) {
+    const {currencySymbol} = useContext(coinsContext)
     console.log(chartData)
     const options = {
         responsive: true,
@@ -41,7 +43,7 @@ export default function LineChart({ chartData, multiAxis }) {
                 position: 'left',
                 ticks: {
                     callback: function (val, index) {
-                        return "$" + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
+                        return currencySymbol + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
                     },
                 }
             },
@@ -54,7 +56,7 @@ export default function LineChart({ chartData, multiAxis }) {
                 },
                 ticks: {
                     callback: function (val, index) {
-                        return "$" + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
+                        return currencySymbol + (val < 100000 ? val.toLocaleString() : convertNumbers(val));
                     },
                 }
             },

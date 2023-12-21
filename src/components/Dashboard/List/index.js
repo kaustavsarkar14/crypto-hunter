@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import "./styles.css"
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
@@ -10,10 +10,11 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { motion } from 'framer-motion';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import coinsContext from '../../../context/coinsContext';
 
 const List = ({ coin }) => {
     const [isStarred, setIsStarred] = useState((JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
-
+    const { currencySymbol} = useContext(coinsContext)
     function handleStarIconClick(event){
         event.preventDefault();
         const starredCoins = JSON.parse(localStorage.getItem('starred')) || []
@@ -65,7 +66,7 @@ const List = ({ coin }) => {
                 </Tooltip>
                 <Tooltip title="Current price" >
                     <td className="info-container td-center-align list-price-mobile"  >
-                        <h1 style={{ color: coin.price_change_percentage_24h > 0 ? "var(--green)" : "var(--red)" }} >${coin.current_price.toLocaleString()}</h1>
+                        <h1 style={{ color: coin.price_change_percentage_24h > 0 ? "var(--green)" : "var(--red)" }} >{currencySymbol+coin.current_price.toLocaleString()}</h1>
                     </td>
                 </Tooltip>
                 <Tooltip title="Total Volume" >

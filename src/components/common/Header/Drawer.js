@@ -3,6 +3,7 @@ import { useState } from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import { IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
+import CurrencySelect from './CurrencySelect';
 
 export default function TemporaryDrawer() {
     const [isOpen, setOpen] = useState(false)
@@ -24,6 +25,7 @@ export default function TemporaryDrawer() {
                             <Link to={'/compare'}>Compare</Link>
                             <Link to={"/convert"} >Convert</Link>
                             <Link to={'/watchlist'} >Watchlist</Link>
+                            <CurrencySelect/>
                         </div>
                     </Drawer>
                 </  div>

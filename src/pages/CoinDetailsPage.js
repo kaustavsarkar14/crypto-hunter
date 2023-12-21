@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/common/Header'
 import { useParams } from 'react-router-dom'
 import List from '../components/Dashboard/List'
@@ -10,9 +10,11 @@ import LineChart from '../components/Coin/LineChart'
 import SelectDate from '../components/Coin/Select'
 import settingChartData from '../functions/settingChartData'
 import PriceType from '../components/Coin/PriceType'
+import coinsContext from '../context/coinsContext'
 
 const CoinDetailsPage = () => {
     const { id } = useParams()
+    const {currency} = useContext(coinsContext)
     const [coin, setCoin] = useState({})
     const [isLoading, setLoading] = useState(true)
     const [days, setDays] = useState(30)
@@ -21,11 +23,11 @@ const CoinDetailsPage = () => {
 
     useEffect(() => {
         getData()
-    }, [days, priceType])
+    }, [days, priceType, currency])
     
     async function getData() {
-        setCoin(await getCoinDetails(id))
-        const prices = await getCoinPrices(id, days, priceType)
+        setCoin(await getCoinDetails(id, currency))
+        const prices = await getCoinPrices(id, days, priceType, currency)
         settingChartData(setChartData, prices, days)
         setLoading(false)
     }
@@ -35,6 +37,7 @@ const CoinDetailsPage = () => {
     function handlePriceTypeChange(e){
         setPriceType(e.target.value)
     }
+    console.log("coinpage data",coin)
     return (
         <div>
             <Header />

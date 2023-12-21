@@ -8,7 +8,8 @@ const CoinsProvider = ({ children }) => {
     const [page, setPage] = useState(1)
     const [paginatedCoins, setPaginatedCoins] = useState([])
     const [isSearching, setSearching] = useState(false)
-
+    const [currency, setCurrency] = useState('USD');
+    const [currencySymbol, setCurrencySymbol] = useState("$")
     const handlePageChange = (e, value) => {
         setSearch('')
         setPage(value)
@@ -24,7 +25,7 @@ const CoinsProvider = ({ children }) => {
         if(search=='') setSearching(false)
     },[search])
     useEffect(() => {
-        fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en')
+        fetch(`https://api.coingecko.com/api/v3/coins/markets?vs_currency=${currency}&order=market_cap_desc&per_page=100&page=1&sparkline=false&locale=en`)
             .then(data => data.json())
             .then(data => {
                 setCoins(data)
@@ -32,10 +33,13 @@ const CoinsProvider = ({ children }) => {
                 setLoading(false)
             })
             .catch(err => console.log(err))
-    }, [])
+        if(currency=="USD") setCurrencySymbol("$")
+        if(currency=="INR") setCurrencySymbol("₹")
+        if(currency=="EUR") setCurrencySymbol("€")
+    }, [currency])
 
 
-    return <coinsContext.Provider value={{ coins,filteredCoins, search, setSearch, onSearchChange, isLoading, setLoading , page, handlePageChange,paginatedCoins, isSearching}}>
+    return <coinsContext.Provider value={{ coins,filteredCoins, search, setSearch, onSearchChange, isLoading, setLoading , page, handlePageChange,paginatedCoins, isSearching,currency, setCurrency,currencySymbol}}>
         {children}
     </coinsContext.Provider>
 }

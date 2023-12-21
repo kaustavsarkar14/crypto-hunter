@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../components/common/Header'
 import SelectCoins from '../components/Compare/SelectCoins.js'
 import SelectDate from '../components/Coin/Select'
@@ -10,8 +10,10 @@ import CoinInfo from '../components/Coin/CoinInfo/index.js'
 import settingChartData from '../functions/settingChartData.js'
 import LineChart from '../components/Coin/LineChart/index.js'
 import PriceType from '../components/Coin/PriceType/index.js'
+import coinsContext from '../context/coinsContext.js'
 
 const ComparePage = () => {
+  const {currency} = useContext(coinsContext)
   const [crypto1, setCrypto1] = useState("bitcoin")
   const [crypto2, setCrypto2] = useState("ethereum")
   const [crypto1Data, setCrypto1Data] = useState({})
@@ -23,12 +25,12 @@ const ComparePage = () => {
 
   useEffect(() => {
     getData()
-  }, [])
+  }, [currency])
 
   async function getData() {
     setLoading(true)
-    const data1 = await getCoinDetails(crypto1)
-    const data2 = await getCoinDetails(crypto2)
+    const data1 = await getCoinDetails(crypto1,currency)
+    const data2 = await getCoinDetails(crypto2,currency)
     if (data1) {
       setCrypto1Data(data1)
     }
@@ -36,8 +38,8 @@ const ComparePage = () => {
       setCrypto2Data(data2)
     }
     if (data1 && data2) {
-      const prices1 = await getCoinPrices(crypto1, days, priceType)
-      const prices2 = await getCoinPrices(crypto2, days, priceType)
+      const prices1 = await getCoinPrices(crypto1, days, priceType,currency)
+      const prices2 = await getCoinPrices(crypto2, days, priceType,currency)
       settingChartData(setChartData, prices1, days, prices2)
       setLoading(false)
     }
@@ -47,16 +49,16 @@ const ComparePage = () => {
     setLoading(true)
     if (isCoin2) {
       setCrypto2(e.target.value)
-      setCrypto2Data(await getCoinDetails(e.target.value))
-      const prices1 = await getCoinPrices(crypto1, days, priceType)
-      const prices2 = await getCoinPrices(e.target.value, days, priceType)
+      setCrypto2Data(await getCoinDetails(e.target.value,currency))
+      const prices1 = await getCoinPrices(crypto1, days, priceType,currency)
+      const prices2 = await getCoinPrices(e.target.value, days, priceType,currency)
       settingChartData(setChartData, prices1, days, prices2)
     }
     else {
       setCrypto1(e.target.value)
-      setCrypto1Data(await getCoinDetails(e.target.value))
-      const prices1 = await getCoinPrices(e.target.value, days, priceType)
-      const prices2 = await getCoinPrices(crypto2, days, priceType)
+      setCrypto1Data(await getCoinDetails(e.target.value,currency))
+      const prices1 = await getCoinPrices(e.target.value, days, priceType,currency)
+      const prices2 = await getCoinPrices(crypto2, days, priceType,currency)
       settingChartData(setChartData, prices1, days, prices2)
     }
     setLoading(false)
@@ -64,17 +66,17 @@ const ComparePage = () => {
 
   async function handleDaysChange(e) {
     setLoading(true)
-    const prices1 = await getCoinPrices(crypto1, e.target.value, priceType)
-    const prices2 = await getCoinPrices(crypto2, e.target.value, priceType)
-    if(prices1 && prices2) settingChartData(setChartData, prices1, days, prices2)
+    const prices1 = await getCoinPrices(crypto1, e.target.value, priceType,currency)
+    const prices2 = await getCoinPrices(crypto2, e.target.value, priceType,currency)
+    if(prices1 && prices2) settingChartData(setChartData, prices1, days, prices2,currency)
     setDays(e.target.value)
     setLoading(false)
   }
   async function handlePriceTypeChange(e) {
     setLoading(true)
-    const prices1 = await getCoinPrices(crypto1, days, e.target.value)
-    const prices2 = await getCoinPrices(crypto2, days, e.target.value)
-    settingChartData(setChartData, prices1, days, prices2)
+    const prices1 = await getCoinPrices(crypto1, days, e.target.value,currency)
+    const prices2 = await getCoinPrices(crypto2, days, e.target.value,currency)
+    settingChartData(setChartData, prices1, days, prices2,currency)
     setPriceType(e.target.value)
     setLoading(false)
   }

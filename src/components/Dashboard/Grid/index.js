@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import "./styles.css"
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
@@ -8,9 +8,11 @@ import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import { motion } from 'framer-motion';
 import {ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import coinsContext from '../../../context/coinsContext';
 
 const Grid = ({ coin }) => {
     const [isStarred, setIsStarred] = useState( (JSON.parse(localStorage.getItem('starred')) || []).includes(coin.id))
+    const { currencySymbol} = useContext(coinsContext)
 
     function handleStarIconClick(event){
         event.preventDefault();
@@ -60,7 +62,7 @@ const Grid = ({ coin }) => {
                     </div>
                 </div>
                 <div className="info-container"  >
-                    <h1 style={{ color: coin.price_change_percentage_24h > 0 ? "var(--green)" : "var(--red)" }} >${coin.current_price.toLocaleString()}</h1>
+                    <h1 style={{ color: coin.price_change_percentage_24h > 0 ? "var(--green)" : "var(--red)" }} >{ currencySymbol+ coin.current_price.toLocaleString()}</h1>
                     <p className='total_volume' >Totol Volume : {coin.total_volume.toLocaleString()}</p>
                     <p className='market_cap' >Market Cap : {coin.market_cap.toLocaleString()}</p>
                 </div>
