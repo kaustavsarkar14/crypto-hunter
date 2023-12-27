@@ -1,6 +1,4 @@
-
-# CryptoHunter
-
+# CryptoHunter![desktop-home](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/b6097143-4bd6-49b5-9d85-0d30bce65893)
 ### A real-time Cryptocyrrency tracker app built using React Js and CoinGecko API 🚀.
 
 - [React.js](https://reactjs.org/)
@@ -9,7 +7,7 @@
 - [CoinGecko API](https://www.coingecko.com/api/documentation)
 - [React Router](https://reactrouter.com/)
 - [Framer Motion](https://www.framer.com/motion/)
-
+- [React Toastify](https://www.npmjs.com/package/react-toastify)
 ## Features
 
 - **Routes**
@@ -38,18 +36,26 @@
 - **Responsive and Clean UI**
   - Clean UI and responsive UI using `Material UI`
   - Cool `Animations` using `Framer Motion`
-
+- **Toast**
+  - Notifications using `React Toastify`
 ## Desktop
 
-- SignIn ![pc-signin](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/f2704d06-3b40-45b8-aaf6-348e389ce980)
-- Search Page ![pc-search-page](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/33308f19-84ba-4657-ad81-1fcd7a176daf)
-- Browse ![pc-home](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/0c6a2047-ee62-4ca6-b6a2-def49c47b130)
-- Movies ![pc-movielist](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/c579a4ad-51a7-4680-ba56-827712038d5d)
-- Modal ![pc-modal](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/89882ff6-4745-42f9-9ae2-51ee236bbede)
+- Home ![desktop-home](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/3ce3e0bb-b231-45e4-b9eb-e69e41537558)
+
+- Dashboard ![desktop-dashboard](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/b845ce1d-33d1-4679-8327-922ba1575086)
+
+- Coin Detais ![desktop-coindetails](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/166efab3-3b65-4a11-b849-ad023d0b1623)
+
+- Compare ![desktop-compare](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/29a8190f-b359-47ec-a09a-c21e1143ed99)
+
+- Convert ![desktop-convert](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/9d315748-77c3-43b5-90b4-335ef860aed3)
+- Watchlist ![desktop-watchlist](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/c7e1dd69-7b60-4fee-a624-268451d94445)
+
 
 ## Mobile
 
-- Mobile ![mobile](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/3aff135e-0208-4dd5-afb4-90963acfb32c)
+- Mobile ![mobile](https://github.com/kaustavsarkar14/crypto-hunter/assets/93545845/f575bc1e-cce9-418e-b3d1-592c7c2351de)
+
 
 # How to Start the Project on you LocalHost
 
