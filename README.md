@@ -1,10 +1,59 @@
-# Getting Started with Create React App
+
+# CryptoHunter
+
+### A real-time Cryptocyrrency tracker app built using React Js and CoinGecko API 🚀.
+
+- [React.js](https://reactjs.org/)
+- [Material UI](https://mui.com/material-ui/)
+- [Chart JS](https://www.chartjs.org/)
+- [CoinGecko API](https://www.coingecko.com/api/documentation)
+- [React Router](https://reactrouter.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+
+## Features
+
+- **Routes**
+  - HomePage
+  - Dashboard
+  - Coin Details Page
+  - Compare Page
+  - Convert Page
+  - Watchlist Page
+- **Dashboard**
+  - `Search` Coin by name & symbol
+  - Coins oragized using `Pagination`
+  - `Dynamic Styling` of cards according to the price change status
+  - `Grid` & `List` view for coin cards
+  - Used `LocalStorage` to `Bookmark` or `Remove from Bookmark` a coin from `Watchlist`
+- **Compare Coins**
+  - `Select` & `Compare` two coins
+  - Show `Graph` using `Chart.js`
+  - Change `Days`, `Price Type` to update to graph in real time.
+- **Watchlist**
+  - Check & remove `Bookmarked` coins
+- **API Polling**
+  - Fetches real time coin data in every `5mins` interval
+- **Change Currency**
+  - Change `Currency` of the app, eg. `USD`, `INR`, `EURO`
+- **Responsive and Clean UI**
+  - Clean UI and responsive UI using `Material UI`
+  - Cool `Animations` using `Framer Motion`
+
+## Desktop
+
+- SignIn ![pc-signin](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/f2704d06-3b40-45b8-aaf6-348e389ce980)
+- Search Page ![pc-search-page](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/33308f19-84ba-4657-ad81-1fcd7a176daf)
+- Browse ![pc-home](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/0c6a2047-ee62-4ca6-b6a2-def49c47b130)
+- Movies ![pc-movielist](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/c579a4ad-51a7-4680-ba56-827712038d5d)
+- Modal ![pc-modal](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/89882ff6-4745-42f9-9ae2-51ee236bbede)
+
+## Mobile
+
+- Mobile ![mobile](https://github.com/kaustavsarkar14/netflix-gpt/assets/93545845/3aff135e-0208-4dd5-afb4-90963acfb32c)
+
+# How to Start the Project on you LocalHost
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
 
 ### `npm start`
 
@@ -13,11 +62,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
 ### `npm run build`
 
@@ -28,43 +72,3 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
