@@ -1,17 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
 
 :root {
-  --white : #fff;
-  --black : #111;
-  --blue : #3a80e9;
-  --grey : #888;
-  --darkgrey : #1b1b1b;
-  --green : #61c96f;
-  --red : #f94141;
+  --white: #fff;
+  --black: #111;
+  --blue: #3a80e9;
+  --grey: #888;
+  --darkgrey: #1b1b1b;
+  --green: #61c96f;
+  --red: #f94141;
 }
 a {
   text-decoration: none;
-  
 }
 * {
   padding: 0;
@@ -21,14 +20,14 @@ a {
 }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--black);
   color: var(--white);
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
 }
 
 ::selection {
@@ -73,7 +72,7 @@ body {
   display: flex;
   justify-content: space-between;
 }
-@media screen and (max-width:1000px){
+@media screen and (max-width: 1000px) {
   .grey-wrapper {
     width: 97%;
     padding-inline: 10px;

@@ -1,0 +1,7 @@
+.filters-div {
+    width: 80%;
+    margin: 0.5rem auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}

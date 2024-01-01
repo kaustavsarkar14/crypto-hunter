@@ -10,6 +10,8 @@ const CoinsProvider = ({ children }) => {
   const [isSearching, setSearching] = useState(false);
   const [currency, setCurrency] = useState("USD");
   const [currencySymbol, setCurrencySymbol] = useState("$");
+  const [sortType, setSortType] = useState("popularity");
+  const [filteredCoins, setFilteredCoins] = useState([]);
   const handlePageChange = (e, value) => {
     setSearch("");
     setPage(value);
@@ -20,26 +22,20 @@ const CoinsProvider = ({ children }) => {
     setSearch(inputValue);
     setSearching(true);
   };
-  const filteredCoins = coins.filter(
-    (coin) =>
-      coin.name.toLowerCase().includes(search.toLowerCase()) ||
-      coin.symbol.toLowerCase().includes(search.toLowerCase())
-  );
   useEffect(() => {
     if (search == "") setSearching(false);
   }, [search]);
 
   useEffect(() => {
-    fetchAllCoins()
+    fetchAllCoins();
     const interval = setInterval(() => {
-        fetchAllCoins()
+      fetchAllCoins();
     }, 300000);
     if (currency == "USD") setCurrencySymbol("$");
     if (currency == "INR") setCurrencySymbol("₹");
     if (currency == "EUR") setCurrencySymbol("€");
-    return ()=>clearInterval(interval)
+    return () => clearInterval(interval);
   }, [currency]);
-
 
   async function fetchAllCoins() {
     fetch(
@@ -53,8 +49,29 @@ const CoinsProvider = ({ children }) => {
       })
       .catch((err) => console.log(err));
   }
+  const sortCoin = (a, b) => {
+    if (sortType == "a-z") return a.name.localeCompare(b.name);
+    else if (sortType == "z-a") return b.name.localeCompare(a.name);
+    else if(sortType == "price-l-h") return a.current_price - b.current_price
+    else if(sortType == "price-h-l") return b.current_price - a.current_price
+    else if(sortType == "change-h-l") return a.price_change_24h - b.price_change_24h
+    else if(sortType == "change-l-h") return b.price_change_24h - a.price_change_24h
+    else return a.market_cap_rank - b.market_cap_rank
+  };
+  useEffect(() => {
+    setPaginatedCoins(coins.sort(sortCoin));
+    setFilteredCoins(
+      coins
+        .filter(
+          (coin) =>
+            coin.name.toLowerCase().includes(search.toLowerCase()) ||
+            coin.symbol.toLowerCase().includes(search.toLowerCase())
+        )
+        .sort(sortCoin)
+    );
+  }, [search, sortType]);
 
-
+  
   return (
     <coinsContext.Provider
       value={{
@@ -72,6 +89,8 @@ const CoinsProvider = ({ children }) => {
         currency,
         setCurrency,
         currencySymbol,
+        sortType,
+        setSortType,
       }}
     >
       {children}
