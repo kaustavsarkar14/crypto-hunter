@@ -91,6 +91,7 @@ const CoinsProvider = ({ children }) => {
         currencySymbol,
         sortType,
         setSortType,
+        setSearch
       }}
     >
       {children}
