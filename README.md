@@ -19,6 +19,7 @@
   - Watchlist Page
 - **Dashboard**
   - `Search` Coin by name & symbol
+  - `Sort` Coins based on multiple factors.
   - Coins oragized using `Pagination`
   - `Dynamic Styling` of cards according to the price change status
   - `Grid` & `List` view for coin cards
