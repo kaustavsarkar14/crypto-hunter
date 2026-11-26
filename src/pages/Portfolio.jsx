@@ -18,6 +18,7 @@ import { computeHoldings, valueHoldings } from '../lib/portfolio'
 import { useLive } from '../store/live'
 import { usePortfolio } from '../store/portfolio'
 import { useUI } from '../store/ui'
+import { HAS_API } from '../lib/env'
 
 function Pnl({ value, pct, currency, className = '' }) {
   if (value == null) return <span className="text-faint">—</span>
@@ -72,9 +73,11 @@ export default function Portfolio() {
         title="Portfolio"
         trailing={
           <div className="flex gap-2">
-            <Button onClick={() => openCopilot('Review my portfolio: performance, concentration risk, and anything notable in the market affecting my holdings.')}>
-              <Sparkles className="size-4 text-violet" /> Review with AI
-            </Button>
+            {HAS_API && (
+              <Button onClick={() => openCopilot('Review my portfolio: performance, concentration risk, and anything notable in the market affecting my holdings.')}>
+                <Sparkles className="size-4 text-violet" /> Review with AI
+              </Button>
+            )}
             <Button variant="primary" onClick={() => setAdding(true)}>
               <Plus className="size-4" /> Add
             </Button>

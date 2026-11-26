@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Newspaper, RefreshCw } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNews } from '../../hooks/queries'
+import { HAS_API } from '../../lib/env'
 import { fadeUp } from '../../lib/motion'
 import { timeAgo } from '../../lib/time'
 import { Skeleton } from '../ui/Skeleton'
@@ -20,6 +21,10 @@ const RESUME_AFTER = 8000 // ms after the user last swiped/scrolled
  * - Reduced motion: no autoplay.
  */
 export function NewsCarousel() {
+  return HAS_API ? <NewsCarouselInner /> : null
+}
+
+function NewsCarouselInner() {
   const { data, isLoading, isError, isFetching, refetch, dataUpdatedAt } = useNews()
   const articles = data?.articles ?? []
   const reduceMotion = useReducedMotion()
@@ -173,8 +178,14 @@ export function NewsCarousel() {
           {failed ? (
             <div className="glass-card flex h-[220px] w-full flex-col items-center justify-center gap-3 rounded-[28px] text-center">
               <p className="text-[16px] font-semibold">Couldn't load the latest news</p>
-              <p className="max-w-sm text-[14px] text-muted">The news service didn't respond. Is the Worker running? Start it with{' '}
-                <code className="rounded-md bg-white/10 px-1.5 py-0.5 text-[13px] text-ink">npm run dev:all</code></p>
+              <p className="max-w-sm text-[14px] text-muted">{import.meta.env.DEV ? (
+                  <>
+                    The news service didn't respond. Is the Worker running? Start it with{' '}
+                    <code className="rounded-md bg-white/10 px-1.5 py-0.5 text-[13px] text-ink">npm run dev:all</code>
+                  </>
+                ) : (
+                  'The news service is temporarily unavailable. Please try again in a moment.'
+                )}</p>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => refetch()}
