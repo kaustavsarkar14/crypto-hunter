@@ -22,7 +22,11 @@ export function SegmentedControl({ options, value, onChange, size = 'md', classN
             onClick={() => onChange(o.value)}
             className={clsx(
               'relative z-10 flex items-center justify-center gap-1.5 rounded-full font-medium transition-colors duration-300',
-              size === 'sm' ? 'h-7 px-3 text-[12px]' : 'h-8 px-3.5 text-[13px]',
+              size === 'sm'
+                ? 'h-7 px-3 text-[12px]'
+                : size === 'responsive'
+                  ? 'h-8 px-2.5 text-[12.5px] md:px-3.5 md:text-[13px]'
+                  : 'h-8 px-3.5 text-[13px]',
               active ? 'text-ink' : 'text-muted hover:text-ink',
             )}
           >
