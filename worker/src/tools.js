@@ -96,18 +96,33 @@ export const OPENAI_TOOLS = CLIENT_TOOLS.map((t) => ({
   function: { name: t.name, description: t.description, parameters: t.input_schema },
 }))
 
+// Short-lived in-memory cache + in-flight de-duplication for CoinGecko calls. Works on any
+// runtime (Cloudflare's `cf.cacheTtl` is ignored on Vercel/Node), and warm serverless
+// instances reuse it, so repeated copilot questions don't burn the upstream rate limit.
+const CACHE_TTL = 60_000
+const cache = new Map() // url → { expires, promise }
+
 async function cg(path, params, env) {
   const url = new URL(CG + path)
   for (const [k, v] of Object.entries(params ?? {})) url.searchParams.set(k, String(v))
-  const res = await fetch(url, {
-    headers: upstreamHeaders(env),
-    // Edge-cache upstream responses briefly so many users don't exhaust CoinGecko's rate limit.
-    cf: { cacheTtl: 60, cacheEverything: true },
-  })
-  if (res.status === 404) throw new ToolError('Coin not found. Try search_coins to get the right id.')
-  if (res.status === 429) throw new ToolError('Market data provider is rate limited. Answer with what you have or try fewer calls.')
-  if (!res.ok) throw new ToolError(`Market data request failed (${res.status}).`)
-  return res.json()
+  const key = url.toString()
+  const hit = cache.get(key)
+  if (hit && hit.expires > Date.now()) return hit.promise
+
+  const promise = (async () => {
+    const res = await fetch(url, {
+      headers: upstreamHeaders(env),
+      cf: { cacheTtl: 60, cacheEverything: true }, // Cloudflare edge cache (no-op elsewhere)
+    })
+    if (res.status === 404) throw new ToolError('Coin not found. Try search_coins to get the right id.')
+    if (res.status === 429) throw new ToolError('Market data provider is rate limited. Answer with what you have or try fewer calls.')
+    if (!res.ok) throw new ToolError(`Market data request failed (${res.status}).`)
+    return res.json()
+  })()
+  cache.set(key, { expires: Date.now() + CACHE_TTL, promise })
+  promise.catch(() => cache.delete(key)) // never cache failures
+  if (cache.size > 300) cache.delete(cache.keys().next().value) // bounded memory
+  return promise
 }
 
 export class ToolError extends Error {}

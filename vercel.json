@@ -4,7 +4,13 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }],
+  "functions": {
+    "api/chat.js": { "maxDuration": 60 }
+  },
+  "rewrites": [
+    { "source": "/api/market/:path*", "destination": "/api/market?path=:path*" },
+    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",

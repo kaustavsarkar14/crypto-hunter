@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { Outlet, ScrollRestoration } from 'react-router'
 import { Toaster } from 'sonner'
 import { useAlertsEngine } from '../../hooks/useAlertsEngine'
-import { HAS_API } from '../../lib/env'
+import { useBackend } from '../../hooks/useBackend'
 import { startLiveFeed } from '../../lib/liveFeed'
 import { CopilotLauncher } from '../copilot/CopilotLauncher'
 import { Background } from './Background'
@@ -13,6 +13,7 @@ import { TabBar } from './TabBar'
 export function AppShell() {
   useEffect(() => startLiveFeed(), [])
   useAlertsEngine()
+  const { copilot } = useBackend()
 
   return (
     // reducedMotion="user" turns spring/transform animations into fades for users who ask for less motion.
@@ -23,7 +24,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <TabBar />
-      {HAS_API && <CopilotLauncher />}
+      {copilot && <CopilotLauncher />}
       {/* Toasts drop in from the top like a Dynamic Island notification */}
       <Toaster
         position="top-center"

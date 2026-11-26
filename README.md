@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  React 19 · Vite · Tailwind CSS v4 · Motion · TanStack Query · Cloudflare Workers · Groq / Claude
+  React 19 · Vite · Tailwind CSS v4 · Motion · TanStack Query · Vercel Functions · Groq / Claude
 </p>
 
 <p align="center">
@@ -90,9 +90,9 @@ flowchart LR
     L --> AE[Alerts engine]
   end
   WS <-- WebSocket --> B[Binance market-data stream]
-  RQ -- REST --> W
+  RQ -- REST, same origin --> W
   UI -- POST /api/chat<br/>SSE stream --> W
-  subgraph W[Cloudflare Worker]
+  subgraph W[Backend: Vercel Functions in /api<br/>or the Cloudflare Worker, same core code]
     P[/api/market<br/>allowlisted, edge-cached proxy/]
     NW[/api/news<br/>RSS aggregator, edge-cached/]
     A[/api/chat<br/>tool-use loop<br/>Groq or Claude/]
@@ -105,7 +105,7 @@ flowchart LR
 ```
 
 **Frontend:** Vite, React 19, React Router 8 (View Transitions), TanStack Query, Zustand, Motion, Tailwind CSS v4, Lightweight Charts, vaul, sonner.
-**Backend:** one Cloudflare Worker using zod, with swappable LLM providers (Groq's OpenAI-compatible API, or the Anthropic SDK).
+**Backend:** platform-neutral code in `worker/src/` (standard `Request`/`Response`/streams, zod, swappable LLM providers), served by **Vercel Functions** in `api/` in production and by a **Cloudflare Worker** in local development. Both run the identical chat, news and market code.
 
 ```
 src/
@@ -114,7 +114,9 @@ src/
   lib/          pure logic: api, formatting, sorting, portfolio math, live-quote merging (unit-tested)
   pages/        route components (code-split)
   store/        Zustand stores (persisted)
-worker/src/
+api/            Vercel Functions: chat, news, market, health (thin adapters over worker/src)
+worker/src/     shared backend core (also deployable as a Cloudflare Worker)
+  chat.js       request parsing + SSE streaming, platform-neutral
   providers/    claude.js, groq.js: one interface, swappable
   tools.js      copilot tools (zod-validated)
   news.js       RSS aggregation and image extraction
@@ -128,7 +130,8 @@ These are the decisions worth discussing in a review or interview.
 **Real-time data**
 - **Streaming without re-render storms.** Binance sends updates for about 400 symbols every second. Ticks go into a buffer that is flushed into the store at most once per animation frame (with a timer fallback in background tabs, so alerts still fire). Each row subscribes only to its own symbol, so only rows whose price changed re-render. Reconnects use exponential backoff with jitter.
 - **Trusting live data carefully.** Binance quotes in USDT. Prices are converted with the live USDT→fiat rate, stablecoins are excluded, and any tick more than 8% away from CoinGecko is ignored, because that usually means a different asset shares the ticker.
-- **Shared edge cache.** CoinGecko's free tier rate-limits each IP. Market data goes through the Worker, whose proxy accepts only an allowlist of read-only paths and caches responses at the edge (60 to 300 seconds), so every visitor shares one cache. In development the app goes through the same proxy and falls back to CoinGecko directly if the Worker isn't running.
+- **Shared CDN cache.** CoinGecko's free tier rate-limits each IP. Market data goes through our own `/api/market` proxy, which accepts only an allowlist of read-only paths and returns `s-maxage` headers (60 to 300 seconds), so Vercel's CDN serves one cached copy to every visitor. The copilot's own CoinGecko calls use a small in-memory cache with in-flight de-duplication. If no backend answers (static hosting, or `npm run dev` without the Worker), the app falls back to CoinGecko directly.
+- **One build, any host.** The UI asks `/api/health` at runtime whether a backend and an AI key exist, and shows the copilot and news accordingly, so the same build works on Vercel, locally, or on static hosting with those features hidden.
 
 **AI copilot**
 - **Tool-use loop.** A manual loop streams over Server-Sent Events. The tools are `search_coins`, `get_market_overview`, `get_coin`, `get_price_history`, `get_crypto_news` and `show_chart`, plus server-side `web_search` on Claude. Tool inputs are validated with zod, and coin ids are pinned to a strict charset because they are interpolated into URLs. `show_chart` is a UI tool: the Worker sends a `chart` event and the browser draws the chart inline in the reply.
@@ -151,7 +154,7 @@ These are the decisions worth discussing in a review or interview.
 
 **Correctness and security**
 - **Money.** Portfolio cost basis is stored in USD, so changing the display currency never rewrites history. Selling uses average cost and records realised P&L. While a new currency loads, the previous data is converted at the live FX rate, so a rupee sign is never shown next to dollar amounts.
-- **Access rules.** Cross-site requests must come from an allowed origin. Public read-only data (news, market prices) is also served to same-origin requests, which browsers send without an `Origin` header. The copilot, which spends API quota, always requires an allowed origin, is rate-limited per IP, and caps request size and history. API keys stay on the server.
+- **Access rules.** The site and its API share one origin, so no CORS setup is needed. Requests from other websites are refused. The copilot, which spends API quota, always requires a same-site `Origin`, is rate-limited per IP, and caps request size and history. API keys exist only as server environment variables.
 - **Testing.** Vitest unit tests cover sorting and filtering, live-quote merging, portfolio math, formatting, FX conversion, the news parser, citation rewriting, provider stream handling and retries, and access rules, plus a component test. GitHub Actions runs tests and builds for both packages.
 
 ## Getting started
@@ -166,13 +169,21 @@ npm run dev:all                                # Worker on :8787, app on :5173
 - Vite forwards `/api` to the Worker. `DEV_ALLOW_LOCALHOST=true` in `.dev.vars` lets the Worker accept any `localhost` port, because Vite moves to 5174, 5175 and so on when 5173 is busy.
 - If port 8787 is already in use, stop the old Worker with `pkill -f "wrangler dev"`.
 
-### Deploy
+### Deploy (Vercel)
 
-```bash
-cd worker && npx wrangler secret put GROQ_API_KEY && npm run deploy   # or ANTHROPIC_API_KEY
-```
+Push to GitHub and import the repo in Vercel. `vercel.json` already sets the Vite build, the `dist/` output, the API rewrites and caching, so there's nothing to configure in the build settings. Then add the environment variables below under **Settings → Environment Variables** and redeploy.
 
-Then set `VITE_API_URL` to the Worker's URL in Vercel, and add your site's origin to `ALLOWED_ORIGINS` in [worker/wrangler.jsonc](worker/wrangler.jsonc).
+| Variable | Required | Notes |
+|---|---|---|
+| `GROQ_API_KEY` | For the copilot | Free at [console.groq.com](https://console.groq.com), no card needed. Without it, the copilot stays hidden and everything else works. |
+| `COINGECKO_API_KEY` | Recommended | Free CoinGecko demo key. Raises the rate limits for the market proxy and the copilot's data tools. Stays on the server. |
+| `ANTHROPIC_API_KEY` | Optional | Use Claude instead of Groq (Claude is preferred when this key exists). |
+| `LLM_PROVIDER` | Optional | `groq` or `claude`, to force one. |
+| `ALLOWED_ORIGINS` | Optional | Extra origins allowed to call the API, comma-separated. Your own domain and preview URLs already work. |
+
+No `VITE_*` variables are needed: the site and API share a domain.
+
+**Alternative: Cloudflare.** `cd worker && npx wrangler secret put GROQ_API_KEY && npm run deploy`, then build the frontend with `VITE_API_URL` set to the Worker's URL, and list the site's origin in `ALLOWED_ORIGINS` in [worker/wrangler.jsonc](worker/wrangler.jsonc).
 
 ### Tests
 

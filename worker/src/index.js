@@ -1,25 +1,8 @@
-import { z } from 'zod'
+import { SSE_HEADERS, isCopilotConfigured, parseChatRequest, pickProvider, startChatStream } from './chat.js'
 import { proxyMarket } from './marketProxy.js'
 import { getHeadlines } from './news.js'
-import { claude } from './providers/claude.js'
-import { groq } from './providers/groq.js'
 
-const PROVIDERS = { claude, groq }
-
-/** LLM_PROVIDER picks the model backend; otherwise use whichever key is configured (Claude first). */
-export function pickProvider(env) {
-  if (env.LLM_PROVIDER && PROVIDERS[env.LLM_PROVIDER]) return PROVIDERS[env.LLM_PROVIDER]
-  return env.ANTHROPIC_API_KEY ? claude : groq
-}
-
-const Body = z.object({
-  messages: z
-    .array(z.object({ role: z.enum(['user', 'assistant']), content: z.string().min(1).max(4000) }))
-    .min(1)
-    .max(20)
-    .refine((m) => m[0].role === 'user' && m.at(-1).role === 'user', 'conversation must start and end with a user message'),
-  context: z.record(z.string(), z.unknown()).optional(),
-})
+export { pickProvider } from './chat.js'
 
 const LOCALHOST = /^http:\/\/(localhost|127\.0\.0\.1)(:\d{1,5})?$/
 
@@ -65,13 +48,15 @@ export default {
     const isChat = url.pathname === '/api/chat'
     const isMarket = url.pathname.startsWith('/api/market/')
     const isNews = url.pathname === '/api/news'
-    if (!isChat && !isMarket && !isNews) return json({ error: 'Not found' }, 404)
-    const access = checkAccess(request, env, { publicRead: isMarket || isNews })
+    const isHealth = url.pathname === '/api/health'
+    if (!isChat && !isMarket && !isNews && !isHealth) return json({ error: 'Not found' }, 404)
+    const access = checkAccess(request, env, { publicRead: isMarket || isNews || isHealth })
     if (!access.ok) return json({ error: 'Origin not allowed' }, 403)
     const cors = access.cors
     if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors })
     if (isMarket) return proxyMarket(request, env, ctx, cors)
     if (isNews) return newsResponse(request, ctx, cors)
+    if (isHealth) return json({ ok: true, copilot: isCopilotConfigured(env) }, 200, { ...cors, 'Cache-Control': 'no-store' })
     if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405, cors)
     const provider = pickProvider(env)
     if (!env[provider.keyName]) return json({ error: `Copilot is not configured yet (missing ${provider.keyName}).` }, 503, cors)
@@ -82,41 +67,11 @@ export default {
       if (!success) return json({ error: 'Too many requests. Try again in a minute.' }, 429, cors)
     }
 
-    let body
-    try {
-      body = Body.parse(await request.json())
-    } catch {
-      return json({ error: 'Invalid request' }, 400, cors)
-    }
+    const messages = await parseChatRequest(request)
+    if (!messages) return json({ error: 'Invalid request' }, 400, cors)
 
-    // App context rides along with the latest user message as clearly delimited data.
-    const messages = body.messages.map((m) => ({ role: m.role, content: m.content }))
-    if (body.context) {
-      const last = messages.at(-1)
-      const context = JSON.stringify(body.context).slice(0, 4000)
-      last.content = `<app_context>${context}</app_context>\n\n${last.content}`
-    }
-
-    const { readable, writable } = new TransformStream()
-    const writer = writable.getWriter()
-    const encoder = new TextEncoder()
-    const emit = (event, data) =>
-      writer.write(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)).catch(() => {})
-
-    emit('meta', { model: provider.label })
-    ctx.waitUntil(
-      provider
-        .run({ env, messages, emit, signal: request.signal })
-        .catch((err) => {
-          console.error(err)
-          emit('error', { message: provider.publicMessage(err) ?? 'Something went wrong. Please try again.' })
-        })
-        .finally(() => writer.close().catch(() => {})),
-    )
-
-    return new Response(readable, {
-      headers: { ...cors, 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform' },
-    })
+    const body = startChatStream({ provider, env, messages, signal: request.signal, waitUntil: (p) => ctx.waitUntil(p) })
+    return new Response(body, { headers: { ...cors, ...SSE_HEADERS } })
   },
 }
 

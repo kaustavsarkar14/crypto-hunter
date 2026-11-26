@@ -14,7 +14,7 @@ import { formatCompact, formatPercent, formatPrice } from '../lib/format'
 import { fadeUp, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
-import { HAS_API } from '../lib/env'
+import { useBackend } from '../hooks/useBackend'
 
 const RANGES = [
   { value: 7, label: '1W' },
@@ -56,6 +56,7 @@ function Column({ coin, color, other }) {
 }
 
 export default function Compare() {
+  const { copilot } = useBackend()
   const markets = useMarketMap()
   const [params, setParams] = useSearchParams()
   const a = params.get('a') ?? 'bitcoin'
@@ -77,7 +78,7 @@ export default function Compare() {
         title="Compare"
         subtitle="Performance rebased to 0% so any two coins share one honest axis."
         trailing={
-          HAS_API && coinA && coinB && (
+          copilot && coinA && coinB && (
             <Button onClick={() => openCopilot(`Compare ${coinA.name} and ${coinB.name} over the last ${days} days. Show a chart.`)}>
               <Sparkles className="size-4 text-violet" /> Explain with AI
             </Button>
