@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useQueries, useQuery } from '@tanstack/react-query'
 import { fetchCoin, fetchFx, fetchGlobal, fetchMarketChart, fetchMarkets, fetchNews, fetchOhlc } from '../lib/api'
+import { HAS_API } from '../lib/env'
 import { convertMarkets } from '../lib/markets'
 import { useSettings } from '../store/settings'
 
@@ -97,6 +98,7 @@ function readNewsCache() {
  */
 export function useNews() {
   return useQuery({
+    enabled: HAS_API,
     queryKey: ['news'],
     queryFn: async () => {
       const data = await fetchNews(12)

@@ -20,6 +20,7 @@ import { formatCompact, formatCompactNumber, formatPercent, formatPrice, stripHt
 import { fadeUp, softSpring, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
+import { HAS_API } from '../lib/env'
 
 const RANGES = [
   { value: 1, label: '1D' },
@@ -112,12 +113,14 @@ export default function CoinDetail() {
             <Button onClick={() => setSheet('alert')}>
               <Bell className="size-4" /> Alert
             </Button>
-            <Button
-              variant="primary"
-              onClick={() => openCopilot(`Give me a concise analysis of ${coin.name}: recent price action, what's driving it, and key levels.`)}
-            >
-              <Sparkles className="size-4" /> Ask AI
-            </Button>
+            {HAS_API && (
+              <Button
+                variant="primary"
+                onClick={() => openCopilot(`Give me a concise analysis of ${coin.name}: recent price action, what's driving it, and key levels.`)}
+              >
+                <Sparkles className="size-4" /> Ask AI
+              </Button>
+            )}
           </motion.div>
         )}
       </div>

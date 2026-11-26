@@ -14,6 +14,7 @@ import { formatCompact, formatPercent, formatPrice } from '../lib/format'
 import { fadeUp, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
+import { HAS_API } from '../lib/env'
 
 const RANGES = [
   { value: 7, label: '1W' },
@@ -76,7 +77,7 @@ export default function Compare() {
         title="Compare"
         subtitle="Performance rebased to 0% so any two coins share one honest axis."
         trailing={
-          coinA && coinB && (
+          HAS_API && coinA && coinB && (
             <Button onClick={() => openCopilot(`Compare ${coinA.name} and ${coinB.name} over the last ${days} days. Show a chart.`)}>
               <Sparkles className="size-4 text-violet" /> Explain with AI
             </Button>

@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { Outlet, ScrollRestoration } from 'react-router'
 import { Toaster } from 'sonner'
 import { useAlertsEngine } from '../../hooks/useAlertsEngine'
+import { HAS_API } from '../../lib/env'
 import { startLiveFeed } from '../../lib/liveFeed'
 import { CopilotLauncher } from '../copilot/CopilotLauncher'
 import { Background } from './Background'
@@ -22,7 +23,7 @@ export function AppShell() {
         <Outlet />
       </main>
       <TabBar />
-      <CopilotLauncher />
+      {HAS_API && <CopilotLauncher />}
       {/* Toasts drop in from the top like a Dynamic Island notification */}
       <Toaster
         position="top-center"

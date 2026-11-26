@@ -13,6 +13,7 @@ import { useLiveQuote } from '../hooks/useLiveQuote'
 import { fadeUp, softSpring, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
+import { HAS_API } from '../lib/env'
 
 const FEATURES = [
   { icon: Radio, title: 'Streaming prices', body: 'WebSocket ticks from Binance, batched to one render per frame.', tint: 'from-up/30' },
@@ -73,15 +74,17 @@ export default function Home() {
                 Open markets <ArrowRight className="size-[18px]" />
               </Link>
             </motion.div>
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.96 }}
-              transition={softSpring}
-              onClick={() => openCopilot('Give me a quick briefing on the crypto market right now.')}
-              className="glass inline-flex h-12 items-center gap-2 rounded-full px-6 text-[17px] font-medium"
-            >
-              <Sparkles className="size-[18px] text-violet" /> Ask the copilot
-            </motion.button>
+            {HAS_API && (
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.96 }}
+                transition={softSpring}
+                onClick={() => openCopilot('Give me a quick briefing on the crypto market right now.')}
+                className="glass inline-flex h-12 items-center gap-2 rounded-full px-6 text-[17px] font-medium"
+              >
+                <Sparkles className="size-[18px] text-violet" /> Ask the copilot
+              </motion.button>
+            )}
           </motion.div>
         </motion.div>
 
