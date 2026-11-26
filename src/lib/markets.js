@@ -1,11 +1,11 @@
 export const SORTS = {
-  rank: { label: 'Market cap', fn: (a, b) => (a.market_cap_rank ?? 1e9) - (b.market_cap_rank ?? 1e9) },
-  'price-desc': { label: 'Price: high → low', fn: (a, b) => b.current_price - a.current_price },
-  'price-asc': { label: 'Price: low → high', fn: (a, b) => a.current_price - b.current_price },
-  'change-desc': { label: 'Top gainers (24h)', fn: (a, b) => (b.price_change_percentage_24h ?? 0) - (a.price_change_percentage_24h ?? 0) },
-  'change-asc': { label: 'Top losers (24h)', fn: (a, b) => (a.price_change_percentage_24h ?? 0) - (b.price_change_percentage_24h ?? 0) },
-  volume: { label: 'Volume (24h)', fn: (a, b) => b.total_volume - a.total_volume },
-  'name-asc': { label: 'Name A → Z', fn: (a, b) => a.name.localeCompare(b.name) },
+  rank: { label: 'Market cap', short: 'Market cap', fn: (a, b) => (a.market_cap_rank ?? 1e9) - (b.market_cap_rank ?? 1e9) },
+  'price-desc': { label: 'Price: high → low', short: 'Price ↓', fn: (a, b) => b.current_price - a.current_price },
+  'price-asc': { label: 'Price: low → high', short: 'Price ↑', fn: (a, b) => a.current_price - b.current_price },
+  'change-desc': { label: 'Top gainers (24h)', short: 'Gainers', fn: (a, b) => (b.price_change_percentage_24h ?? 0) - (a.price_change_percentage_24h ?? 0) },
+  'change-asc': { label: 'Top losers (24h)', short: 'Losers', fn: (a, b) => (a.price_change_percentage_24h ?? 0) - (b.price_change_percentage_24h ?? 0) },
+  volume: { label: 'Volume (24h)', short: 'Volume', fn: (a, b) => b.total_volume - a.total_volume },
+  'name-asc': { label: 'Name A → Z', short: 'A → Z', fn: (a, b) => a.name.localeCompare(b.name) },
 }
 
 /**

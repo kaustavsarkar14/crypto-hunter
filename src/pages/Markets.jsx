@@ -1,4 +1,4 @@
-import { LayoutGrid, List, Search, X } from 'lucide-react'
+import { LayoutGrid, List, Search, Star, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router'
@@ -89,9 +89,11 @@ export default function Markets() {
       <LargeTitle title="Markets" subtitle="Top 250 cryptocurrencies, streaming live." />
       <GlobalStats />
 
-      <div className="sticky top-[88px] z-30 -mx-2 mb-6 px-2">
+      {/* Pinned just under the nav (which sits below the notch / safe area). On phones:
+          row 1 = search + layout toggle, row 2 = filter + sort. One row on desktop. */}
+      <div className="sticky top-[calc(max(env(safe-area-inset-top),12px)+64px)] z-30 -mx-2 mb-6 px-2">
         <Glass material="glass" className="flex flex-wrap items-center gap-2 rounded-[26px] p-2">
-          <div className="relative min-w-52 flex-1">
+          <div className="relative order-1 min-w-0 flex-1 basis-40 md:min-w-52">
             <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-faint" />
             <input
               value={query}
@@ -117,22 +119,30 @@ export default function Markets() {
           </div>
           <SegmentedControl
             label="Filter"
+            size="responsive"
+            className="order-3 md:order-2"
             value={filter}
             onChange={(v) => setParam('filter', v, 'all')}
             options={[
               { value: 'all', label: 'All' },
               { value: 'gainers', label: 'Gainers' },
               { value: 'losers', label: 'Losers' },
-              { value: 'starred', label: 'Starred' },
+              {
+                value: 'starred',
+                label: <span className="max-md:sr-only">Starred</span>,
+                icon: <Star className="size-3.5 md:hidden" />,
+              },
             ]}
           />
           <Menu
             label="Sort by"
+            className="order-4 md:order-3"
             value={sort}
             onChange={(v) => setParam('sort', v, 'rank')}
-            options={Object.entries(SORTS).map(([value, s]) => ({ value, label: s.label }))}
+            options={Object.entries(SORTS).map(([value, s]) => ({ value, label: s.label, short: s.short }))}
           />
           <SegmentedControl
+            className="order-2 md:order-4"
             label="Layout"
             value={view}
             onChange={(v) => setParam('view', v, 'grid')}

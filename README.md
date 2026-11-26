@@ -16,8 +16,6 @@
   <img src="docs/screenshots/desktop-home.jpg" alt="Crypto Hunter home page on desktop: hero, live top-5 prices, price ticker and news" width="100%" />
 </p>
 
-> v2 is a ground-up rewrite of the original Create React App + MUI version. See [What changed from v1](#what-changed-from-v1).
-
 ## Highlights
 
 - **Live prices**, streamed from Binance over a WebSocket and batched to one render per frame.
@@ -190,21 +188,5 @@ No `VITE_*` variables are needed: the site and API share a domain.
 ```bash
 npm run test:all
 ```
-
-## What changed from v1
-
-| v1 | v2 |
-|---|---|
-| Prices polled every 5 minutes | WebSocket ticks, batched once per frame |
-| `coins.sort()` mutated React state | Pure selector functions with unit tests |
-| "Top gainers" sort was backwards | Fixed, with a test |
-| One `<ToastContainer>` per card (about 100) | One app-level toaster |
-| `<Link>` wrapping `<tr>` (invalid HTML) | Overlay links, with no interactive elements nested inside links |
-| Watchlist read `localStorage` once, so it didn't update | Persisted Zustand store (old `starred` data is migrated) |
-| Market cap always in USD | Every figure in the selected currency |
-| Dual y-axes in Compare | Performance rebased to 0% on one honest axis |
-| No error, loading or rate-limit handling | Skeletons, error states, backoff on 429s, route-level error boundary |
-| CRA + MUI (CRA is deprecated) | Vite + Tailwind v4, code-split routes |
-| No news, AI or portfolio | News carousel, AI copilot, portfolio and alerts |
 
 Chart rendering by [TradingView Lightweight Charts](https://www.tradingview.com/lightweight-charts/). Market data from [CoinGecko](https://www.coingecko.com/) and Binance. News from CoinDesk, Cointelegraph, Decrypt and Bitcoin Magazine.
