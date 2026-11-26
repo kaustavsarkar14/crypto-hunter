@@ -1,85 +1,273 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap");
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
 
-:root {
-  --white: #fff;
-  --black: #111;
-  --blue: #3a80e9;
-  --grey: #888;
-  --darkgrey: #1b1b1b;
-  --green: #61c96f;
-  --red: #f94141;
-}
-a {
-  text-decoration: none;
-}
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
-}
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--black);
-  color: var(--white);
-  font-family: "Roboto", sans-serif;
+/* ─── Design tokens ───────────────────────────────────────────── */
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    "Inter Variable", system-ui, sans-serif;
+
+  --color-canvas: #05060a;
+  --color-ink: #f5f5f7;
+  --color-muted: rgb(235 235 245 / 0.62);
+  --color-faint: rgb(235 235 245 / 0.32);
+  --color-hairline: rgb(255 255 255 / 0.1);
+
+  /* iOS system colours (dark) */
+  --color-up: #30d158;
+  --color-down: #ff453a;
+  --color-accent: #0a84ff;
+  --color-violet: #bf5af2;
+  --color-orange: #ff9f0a;
+  --color-teal: #64d2ff;
+
+  --ease-ios: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-::selection {
-  background-color: var(--blue);
-  color: var(--white);
+/* ─── Glass materials ─────────────────────────────────────────────
+   `glass` uses real backdrop blur. It is expensive, so it is kept to
+   floating chrome (nav, tab bar, sheets, panels, menus).
+   `glass-card` looks like glass over the already-blurred background
+   without a backdrop-filter, so a grid of 250 cards still scrolls at 120fps. */
+@utility glass {
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.13) 0%,
+    rgb(255 255 255 / 0.05) 100%
+  );
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.22),
+    inset 0 -1px 0 rgb(255 255 255 / 0.04),
+    0 20px 50px -12px rgb(0 0 0 / 0.55);
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-  border-radius: 10px;
+@utility glass-strong {
+  background: linear-gradient(
+    180deg,
+    rgb(40 42 54 / 0.72) 0%,
+    rgb(20 21 28 / 0.78) 100%
+  );
+  backdrop-filter: blur(40px) saturate(190%);
+  -webkit-backdrop-filter: blur(40px) saturate(190%);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    0 30px 80px -20px rgb(0 0 0 / 0.7);
 }
 
-/* Track */
-::-webkit-scrollbar-track {
-  background: var(--darkgrey);
+@utility glass-card {
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgb(255 255 255 / 0.09) 0%,
+    rgb(255 255 255 / 0.025) 60%,
+    rgb(255 255 255 / 0.04) 100%
+  );
+  border: 1px solid rgb(255 255 255 / 0.09);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.12),
+    0 10px 30px -12px rgb(0 0 0 / 0.5);
 }
 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 10px;
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
 }
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: var(--white);
-}
-.container {
-  width: 65%;
-  margin: auto;
-}
-.grey-wrapper {
-  display: block;
-  background-color: var(--darkgrey);
-  margin: 1rem auto;
-  border-radius: 0.8rem;
-}
-.p1 {
-  padding: 1rem;
-}
-.coin-controls {
-  display: flex;
-  justify-content: space-between;
-}
-@media screen and (max-width: 1000px) {
-  .grey-wrapper {
-    width: 97%;
-    padding-inline: 10px;
-    padding-top: 10px;
-    padding-bottom: 2px;
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
-  .container {
-    width: 97%;
+}
+
+/* ─── Base ────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+    min-height: 100dvh;
+    letter-spacing: -0.011em;
+  }
+  ::selection {
+    background: rgb(10 132 255 / 0.45);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 12px;
+  }
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+}
+
+/* Specular highlight that follows the pointer (set by <Glass interactive>) */
+.glass-interactive {
+  isolation: isolate;
+}
+.glass-interactive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-ios);
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 255 255 / 0.1),
+    transparent 45%
+  );
+}
+.glass-interactive:hover::after {
+  opacity: 1;
+}
+
+/* ─── Ambient background ──────────────────────────────────────── */
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.55;
+  will-change: transform;
+  animation: drift 26s var(--ease-ios) infinite alternate;
+}
+@keyframes drift {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(6vw, -4vh, 0) scale(1.12); }
+  100% { transform: translate3d(-4vw, 6vh, 0) scale(0.94); }
+}
+
+/* ─── Live price flash ────────────────────────────────────────── */
+.flash-up { animation: flash-up 0.9s var(--ease-ios); }
+.flash-down { animation: flash-down 0.9s var(--ease-ios); }
+@keyframes flash-up {
+  0% { color: var(--color-up); text-shadow: 0 0 18px rgb(48 209 88 / 0.7); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+@keyframes flash-down {
+  0% { color: var(--color-down); text-shadow: 0 0 18px rgb(255 69 58 / 0.7); }
+  100% { text-shadow: 0 0 0 transparent; }
+}
+
+/* ─── Skeleton shimmer ────────────────────────────────────────── */
+.shimmer {
+  background: linear-gradient(
+    100deg,
+    rgb(255 255 255 / 0.04) 30%,
+    rgb(255 255 255 / 0.1) 50%,
+    rgb(255 255 255 / 0.04) 70%
+  );
+  background-size: 300% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+/* ─── News carousel progress (drives autoplay via animationend) ─ */
+.carousel-progress {
+  transform-origin: left center;
+  animation-name: carousel-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes carousel-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* ─── Ticker marquee ──────────────────────────────────────────── */
+.marquee {
+  animation: marquee 60s linear infinite;
+}
+.marquee:hover { animation-play-state: paused; }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─── View Transitions (route changes + shared coin logo) ───────
+   Only the page content animates. The chrome (nav, tab bar, background) stays
+   in the root snapshot, which swaps instantly.
+   Why not give the nav its own view-transition-name? Any element with one becomes
+   a "backdrop root", and its backdrop-filter can no longer see the page behind it:
+   the frosted glass silently turns off. So the page name is applied only while a
+   transition is actually running (:active-view-transition). */
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-ios);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+html:active-view-transition .vt-page {
+  view-transition-name: page;
+}
+::view-transition-old(page) {
+  animation: 0.26s var(--ease-ios) both vt-out;
+}
+::view-transition-new(page) {
+  animation: 0.42s var(--ease-ios) both vt-in;
+}
+@keyframes vt-out {
+  to { opacity: 0; transform: scale(0.985); }
+}
+@keyframes vt-in {
+  from { opacity: 0; transform: scale(1.015) translateY(6px); }
+}
+
+/* Header material: a deeper frost than generic glass, so text never shows through */
+@utility glass-nav {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.12) 0%, rgb(255 255 255 / 0.04) 100%),
+    rgb(14 15 22 / 0.42);
+  backdrop-filter: blur(30px) saturate(180%) brightness(0.92);
+  -webkit-backdrop-filter: blur(30px) saturate(180%) brightness(0.92);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    inset 0 -1px 0 rgb(255 255 255 / 0.03),
+    0 12px 32px -12px rgb(0 0 0 / 0.6);
+  transition: background-color 0.4s var(--ease-ios), box-shadow 0.4s var(--ease-ios);
+}
+
+/* ─── Copilot markdown ────────────────────────────────────────── */
+.prose-chat > * + * { margin-top: 0.6em; }
+.prose-chat ul { list-style: disc; padding-left: 1.2em; }
+.prose-chat ol { list-style: decimal; padding-left: 1.2em; }
+.prose-chat li + li { margin-top: 0.25em; }
+.prose-chat strong { color: var(--color-ink); font-weight: 600; }
+.prose-chat a { color: var(--color-teal); text-decoration: underline; text-underline-offset: 2px; }
+.prose-chat code {
+  font-size: 0.85em;
+  background: rgb(255 255 255 / 0.08);
+  padding: 0.1em 0.35em;
+  border-radius: 6px;
+}
+.prose-chat h1, .prose-chat h2, .prose-chat h3 { font-weight: 600; color: var(--color-ink); }
+
+/* ─── Accessibility: honour reduced motion everywhere ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

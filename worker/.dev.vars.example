@@ -1,0 +1,15 @@
+# Local dev only: accept requests from any localhost port (Vite may use 5174, 5175…)
+DEV_ALLOW_LOCALHOST=true
+
+# Pick the model backend: "groq" (free tier, no card) or "claude".
+# If unset, Claude is used when ANTHROPIC_API_KEY is present, otherwise Groq.
+LLM_PROVIDER=groq
+
+# Free: https://console.groq.com → API Keys
+GROQ_API_KEY=gsk_...
+
+# Optional: https://platform.claude.com → API Keys
+ANTHROPIC_API_KEY=
+
+# Optional: CoinGecko demo key for higher rate limits
+COINGECKO_API_KEY=
