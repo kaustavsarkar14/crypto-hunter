@@ -20,7 +20,7 @@ import { formatCompact, formatCompactNumber, formatPercent, formatPrice, stripHt
 import { fadeUp, softSpring, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
-import { HAS_API } from '../lib/env'
+import { useBackend } from '../hooks/useBackend'
 
 const RANGES = [
   { value: 1, label: '1D' },
@@ -31,6 +31,7 @@ const RANGES = [
 ]
 
 export default function CoinDetail() {
+  const { copilot } = useBackend()
   const { id } = useParams()
   const currency = useSettings((s) => s.currency)
   const cur = currency.toLowerCase()
@@ -113,7 +114,7 @@ export default function CoinDetail() {
             <Button onClick={() => setSheet('alert')}>
               <Bell className="size-4" /> Alert
             </Button>
-            {HAS_API && (
+            {copilot && (
               <Button
                 variant="primary"
                 onClick={() => openCopilot(`Give me a concise analysis of ${coin.name}: recent price action, what's driving it, and key levels.`)}

@@ -18,7 +18,7 @@ import { computeHoldings, valueHoldings } from '../lib/portfolio'
 import { useLive } from '../store/live'
 import { usePortfolio } from '../store/portfolio'
 import { useUI } from '../store/ui'
-import { HAS_API } from '../lib/env'
+import { useBackend } from '../hooks/useBackend'
 
 function Pnl({ value, pct, currency, className = '' }) {
   if (value == null) return <span className="text-faint">—</span>
@@ -33,6 +33,7 @@ function Pnl({ value, pct, currency, className = '' }) {
 }
 
 export default function Portfolio() {
+  const { copilot } = useBackend()
   const txs = usePortfolio((s) => s.txs)
   const removeTx = usePortfolio((s) => s.removeTx)
   const markets = useMarketMap()
@@ -73,7 +74,7 @@ export default function Portfolio() {
         title="Portfolio"
         trailing={
           <div className="flex gap-2">
-            {HAS_API && (
+            {copilot && (
               <Button onClick={() => openCopilot('Review my portfolio: performance, concentration risk, and anything notable in the market affecting my holdings.')}>
                 <Sparkles className="size-4 text-violet" /> Review with AI
               </Button>

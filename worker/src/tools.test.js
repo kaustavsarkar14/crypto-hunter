@@ -46,3 +46,18 @@ describe('tool definitions', () => {
     expect(CLAUDE_TOOLS.find((t) => t.name === 'web_search').eager_input_streaming).toBeUndefined()
   })
 })
+
+describe('CoinGecko call cache', () => {
+  it('serves repeat and concurrent calls from one upstream request, but never caches failures', async () => {
+    const spy = vi.spyOn(globalThis, 'fetch').mockImplementation(async () => Response.json({ coins: [{ id: 'x', name: 'X', symbol: 'x', market_cap_rank: 1 }] }))
+    await Promise.all([runTool('search_coins', { query: 'cachetest' }, { env: {} }), runTool('search_coins', { query: 'cachetest' }, { env: {} })])
+    await runTool('search_coins', { query: 'cachetest' }, { env: {} })
+    expect(spy).toHaveBeenCalledTimes(1)
+
+    spy.mockImplementation(async () => new Response('{}', { status: 429 }))
+    await expect(runTool('search_coins', { query: 'fails' }, { env: {} })).rejects.toThrow(/rate limited/)
+    spy.mockImplementation(async () => Response.json({ coins: [] }))
+    await expect(runTool('search_coins', { query: 'fails' }, { env: {} })).resolves.toEqual([])
+    spy.mockRestore()
+  })
+})

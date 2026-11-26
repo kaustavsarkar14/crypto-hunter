@@ -1,12 +1,11 @@
-// Where market data comes from:
-// - VITE_API_URL set (production): the Worker's edge-cached proxy, shared by every visitor.
-// - Development: the same proxy through Vite (/api → `wrangler dev`), so reloads share one
-//   cache instead of each spending CoinGecko's tiny per-IP quota. If the Worker isn't
-//   running, fall back to CoinGecko directly so the app still works.
-const API_URL = import.meta.env?.VITE_API_URL
+// Market data goes through our own cached proxy first (/api/market: a Vercel Function in
+// production, the Worker in development, or the Worker at VITE_API_URL if set), so every
+// visitor shares one cache instead of spending CoinGecko's tiny per-IP quota. If no backend
+// answers (static hosting, or `npm run dev` without the Worker) we fall back to CoinGecko directly.
+const API_URL = import.meta.env?.VITE_API_URL ?? ''
 const DIRECT = 'https://api.coingecko.com/api/v3'
 const KEY = import.meta.env?.VITE_COINGECKO_API_KEY
-const PROXY = API_URL ? `${API_URL}/api/market` : import.meta.env?.DEV ? '/api/market' : null
+const PROXY = `${API_URL}/api/market`
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -30,15 +29,17 @@ async function request(url, headers) {
   }
 }
 
-let proxyDown = false // remember for this session once the dev proxy proves unreachable
+let proxyDown = false // remember for this session once the proxy proves unavailable
+
+const isJson = (res) => res?.headers.get('content-type')?.includes('application/json')
 
 async function cg(path, params = {}) {
   const qs = query(params)
   let res = null
-  if (PROXY && !proxyDown) {
+  if (!proxyDown) {
     res = await request(`${PROXY}${path}?${qs}`)
-    // Worker not running in dev: Vite answers 5xx (or the request fails). Use CoinGecko directly.
-    if (!API_URL && (!res || res.status >= 500)) {
+    // No backend: the request fails, the dev server answers 5xx, or static hosting serves index.html.
+    if (!res || res.status >= 500 || !isJson(res)) {
       proxyDown = true
       res = null
     }
@@ -93,10 +94,21 @@ export const fetchGlobal = () => cg('/global')
 export async function fetchNews(limit = 12) {
   let res
   try {
-    res = await fetch(`${API_URL ?? ''}/api/news?limit=${limit}`)
+    res = await fetch(`${API_URL}/api/news?limit=${limit}`)
   } catch {
     throw new ApiError('News unavailable', 0)
   }
   if (!res.ok) throw new ApiError('News unavailable', res.status)
   return res.json()
+}
+
+/** Is there a backend (and an AI key)? Decides at runtime whether news and the copilot are shown. */
+export async function fetchHealth() {
+  try {
+    const res = await fetch(`${API_URL}/api/health`, { cache: 'no-store' })
+    if (!res.ok || !isJson(res)) return { ok: false, copilot: false }
+    return await res.json()
+  } catch {
+    return { ok: false, copilot: false }
+  }
 }

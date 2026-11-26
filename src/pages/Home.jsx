@@ -13,7 +13,7 @@ import { useLiveQuote } from '../hooks/useLiveQuote'
 import { fadeUp, softSpring, stagger } from '../lib/motion'
 import { useSettings } from '../store/settings'
 import { useUI } from '../store/ui'
-import { HAS_API } from '../lib/env'
+import { useBackend } from '../hooks/useBackend'
 
 const FEATURES = [
   { icon: Radio, title: 'Streaming prices', body: 'WebSocket ticks from Binance, batched to one render per frame.', tint: 'from-up/30' },
@@ -44,6 +44,7 @@ function PreviewRow({ coin }) {
 }
 
 export default function Home() {
+  const { copilot } = useBackend()
   const { data } = useMarkets()
   const openCopilot = useUI((s) => s.openCopilot)
   const top = data?.slice(0, 5) ?? []
@@ -74,7 +75,7 @@ export default function Home() {
                 Open markets <ArrowRight className="size-[18px]" />
               </Link>
             </motion.div>
-            {HAS_API && (
+            {copilot && (
               <motion.button
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}

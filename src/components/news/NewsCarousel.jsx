@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight, Newspaper, RefreshCw } from 'lucide-react'
 import { motion, useReducedMotion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNews } from '../../hooks/queries'
-import { HAS_API } from '../../lib/env'
 import { fadeUp } from '../../lib/motion'
 import { timeAgo } from '../../lib/time'
 import { Skeleton } from '../ui/Skeleton'
@@ -21,10 +20,6 @@ const RESUME_AFTER = 8000 // ms after the user last swiped/scrolled
  * - Reduced motion: no autoplay.
  */
 export function NewsCarousel() {
-  return HAS_API ? <NewsCarouselInner /> : null
-}
-
-function NewsCarouselInner() {
   const { data, isLoading, isError, isFetching, refetch, dataUpdatedAt } = useNews()
   const articles = data?.articles ?? []
   const reduceMotion = useReducedMotion()
@@ -117,6 +112,8 @@ function NewsCarouselInner() {
   }
 
   const failed = isError && !articles.length
+  // No backend and nothing cached (e.g. static hosting): leave the section out entirely.
+  if (!isLoading && !isError && !articles.length) return null
 
   return (
     <motion.section
