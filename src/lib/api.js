@@ -1,8 +1,12 @@
-// With VITE_API_URL set, market data goes through the Worker's edge-cached proxy
-// (shared cache across all users); otherwise straight to CoinGecko's public API.
+// Where market data comes from:
+// - VITE_API_URL set (production): the Worker's edge-cached proxy, shared by every visitor.
+// - Development: the same proxy through Vite (/api → `wrangler dev`), so reloads share one
+//   cache instead of each spending CoinGecko's tiny per-IP quota. If the Worker isn't
+//   running, fall back to CoinGecko directly so the app still works.
 const API_URL = import.meta.env?.VITE_API_URL
-const BASE = API_URL ? `${API_URL}/api/market` : 'https://api.coingecko.com/api/v3'
-const KEY = API_URL ? undefined : import.meta.env?.VITE_COINGECKO_API_KEY
+const DIRECT = 'https://api.coingecko.com/api/v3'
+const KEY = import.meta.env?.VITE_COINGECKO_API_KEY
+const PROXY = API_URL ? `${API_URL}/api/market` : import.meta.env?.DEV ? '/api/market' : null
 
 export class ApiError extends Error {
   constructor(message, status) {
@@ -12,22 +16,42 @@ export class ApiError extends Error {
   }
 }
 
-async function cg(path, params = {}) {
-  const url = new URL(BASE + path)
-  for (const [k, v] of Object.entries(params)) if (v != null) url.searchParams.set(k, String(v))
-  let res
+const query = (params) => {
+  const q = new URLSearchParams()
+  for (const [k, v] of Object.entries(params)) if (v != null) q.set(k, String(v))
+  return q.toString()
+}
+
+async function request(url, headers) {
   try {
-    res = await fetch(url, { headers: KEY ? { 'x-cg-demo-api-key': KEY } : undefined })
+    return await fetch(url, headers ? { headers } : undefined)
   } catch {
-    throw new ApiError('Network error. Check your connection.', 0)
+    return null // network failure (or CORS-less error response from CoinGecko)
   }
+}
+
+let proxyDown = false // remember for this session once the dev proxy proves unreachable
+
+async function cg(path, params = {}) {
+  const qs = query(params)
+  let res = null
+  if (PROXY && !proxyDown) {
+    res = await request(`${PROXY}${path}?${qs}`)
+    // Worker not running in dev: Vite answers 5xx (or the request fails). Use CoinGecko directly.
+    if (!API_URL && (!res || res.status >= 500)) {
+      proxyDown = true
+      res = null
+    }
+  }
+  res ??= await request(`${DIRECT}${path}?${qs}`, KEY ? { 'x-cg-demo-api-key': KEY } : undefined)
+  if (!res) throw new ApiError('Market data is busy or unreachable. Retrying…', 0)
   if (!res.ok) {
     const message =
       res.status === 429
         ? 'CoinGecko rate limit reached. Retrying shortly…'
         : res.status === 404
           ? 'Not found'
-          : `CoinGecko error (${res.status})`
+          : `Market data error (${res.status})`
     throw new ApiError(message, res.status)
   }
   return res.json()

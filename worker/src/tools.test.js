@@ -21,6 +21,20 @@ describe('runTool validation', () => {
   })
 })
 
+describe('currency handling', () => {
+  it('accepts upper-case currency codes from the model and normalises them', async () => {
+    const emit = vi.fn()
+    // show_chart has no network call; use get_* schemas indirectly via a rejected id to prove parsing order
+    await expect(runTool('get_coin', { coin_id: 'BAD ID', currency: 'USD' }, { emit })).rejects.toThrow(/coin_id/)
+    await expect(runTool('get_coin', { coin_id: 'bitcoin', currency: 'JPY' }, { emit })).rejects.toThrow(/INVALID_INPUT/)
+  })
+
+  it('does not put a case-sensitive enum in the schema sent to the model', () => {
+    const cur = CLIENT_TOOLS.find((t) => t.name === 'get_coin').input_schema.properties.currency
+    expect(cur.enum).toBeUndefined()
+  })
+})
+
 describe('tool definitions', () => {
   it('are strict-shaped', () => {
     for (const t of CLIENT_TOOLS) expect(t.input_schema.additionalProperties).toBe(false)

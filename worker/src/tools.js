@@ -6,7 +6,8 @@ const CG = 'https://api.coingecko.com/api/v3'
 
 // Model output is untrusted: coin ids are interpolated into URLs, so pin them to CoinGecko's id charset.
 const coinId = z.string().regex(/^[a-z0-9-]{1,80}$/, 'coin_id must be a CoinGecko id like "bitcoin"')
-const currency = z.enum(['usd', 'inr', 'eur', 'gbp']).default('usd')
+// Models often echo the app's "USD"; accept any case and normalise before validating.
+const currency = z.preprocess((v) => (typeof v === 'string' ? v.toLowerCase() : v), z.enum(['usd', 'inr', 'eur', 'gbp'])).default('usd')
 
 const schemas = {
   search_coins: z.object({ query: z.string().min(1).max(60) }),
@@ -17,7 +18,9 @@ const schemas = {
   get_crypto_news: z.object({ query: z.string().max(60).optional(), limit: z.number().int().min(1).max(10).default(6) }),
 }
 
-const currencyProp = { type: 'string', enum: ['usd', 'inr', 'eur', 'gbp'], description: "Quote currency. Use the user's currency from app_context." }
+// No JSON-schema enum here: Groq validates server-side and hard-fails the whole turn on "USD" vs "usd".
+// zod (above) still enforces the allowed values after lower-casing.
+const currencyProp = { type: 'string', description: 'Quote currency code: usd, inr, eur or gbp. Use the user\'s currency from app_context.' }
 const coinIdProp = { type: 'string', description: 'CoinGecko coin id, e.g. "bitcoin", "ethereum", "solana". Use search_coins if unsure.' }
 
 /** Client tools. Order is fixed so the tools prefix stays prompt-cache friendly. */

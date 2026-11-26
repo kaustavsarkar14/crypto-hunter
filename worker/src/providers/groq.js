@@ -138,6 +138,13 @@ export const groq = {
         const transient = err instanceof SyntaxError || (err instanceof ProviderError && (err.code === 'tool_use_failed' || err.status >= 500))
         if (!transient || signal.aborted || retries++ >= 2) throw err
         console.warn('groq: retrying turn after', err.message)
+        if (err.code === 'tool_use_failed') {
+          // Repeating the identical request repeats the mistake; tell the model what was wrong.
+          conversation.push({
+            role: 'system',
+            content: `Your previous tool call was rejected: ${err.message.slice(0, 300)}. Call the tool again with corrected arguments.`,
+          })
+        }
         emit('retry', {})
         turn--
         continue
